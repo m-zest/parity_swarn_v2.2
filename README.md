@@ -172,6 +172,129 @@ By default, it reads the `.env` file from the root directory and maps ports `300
 
 > Accelerated mirror addresses are provided as comments in `docker-compose.yml` and can be substituted as needed.
 
+## 🔌 Scope3Scout ESG Risk API (Integration Wrapper)
+
+MiroFish includes a **FastAPI wrapper** (`backend/esg_wrapper.py`) that exposes MiroFish's multi-agent simulation engine as a single REST endpoint for ESG risk assessment, designed for integration with [Scope3Scout](https://scope3scout.vercel.app).
+
+### Architecture
+
+```
+Scope3Scout App                    ESG Wrapper (port 8001)                MiroFish Backend (port 5001)
+     |                                    |                                        |
+     |  POST /api/simulate-esg-risk       |                                        |
+     | ---------------------------------> |                                        |
+     |    { supplier, violations }        |  1. Convert to .txt document           |
+     |                                    |  2. POST /api/graph/ontology/generate  |
+     |                                    | -------------------------------------> |
+     |                                    |  3. POST /api/graph/build + poll       |
+     |                                    | -------------------------------------> |
+     |                                    |  4. POST /api/simulation/create        |
+     |                                    | -------------------------------------> |
+     |                                    |  5. POST /api/simulation/prepare       |
+     |                                    | -------------------------------------> |
+     |                                    |  6. POST /api/simulation/start + poll  |
+     |                                    | -------------------------------------> |
+     |                                    |  7. POST /api/report/generate + poll   |
+     |                                    | -------------------------------------> |
+     |                                    |  8. Parse report with LLM             |
+     |                                    |  9. DELETE project (cleanup)           |
+     |  { risk_score, predictions, ... }  |                                        |
+     | <--------------------------------- |                                        |
+```
+
+### Quick Start
+
+```bash
+# 1. Make sure MiroFish is running
+npm run dev
+
+# 2. Install wrapper dependencies
+pip install fastapi uvicorn httpx
+
+# 3. Start the ESG wrapper on port 8001
+python -m backend.esg_wrapper
+```
+
+### API Usage
+
+**Endpoint:** `POST http://localhost:8001/api/simulate-esg-risk`
+
+```bash
+curl -X POST http://localhost:8001/api/simulate-esg-risk \
+  -H "Content-Type: application/json" \
+  -d '{
+    "supplier_name": "Acme Chemical Corp",
+    "country": "Germany",
+    "violations": [
+      {
+        "type": "environmental",
+        "severity": "critical",
+        "description": "Dumping untreated wastewater into local river",
+        "fine_amount_eur": 500000
+      }
+    ]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "risk_score": 82,
+  "predictions": [
+    {
+      "agent_type": "regulator",
+      "prediction": "Environmental agency investigation within 30 days",
+      "probability": 0.85,
+      "timeline_days": 30
+    },
+    {
+      "agent_type": "media",
+      "prediction": "Local and national press coverage expected",
+      "probability": 0.70,
+      "timeline_days": 7
+    },
+    {
+      "agent_type": "investor",
+      "prediction": "ESG fund divestment risk if violation goes public",
+      "probability": 0.60,
+      "timeline_days": 60
+    }
+  ],
+  "recommended_action": "Immediate remediation and voluntary disclosure to regulators",
+  "financial_exposure_eur": 1500000,
+  "csrd_compliant": false,
+  "simulation_id": "sim_xxxx",
+  "source": "simulation",
+  "cached": false
+}
+```
+
+### Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MIROFISH_BASE_URL` | `http://localhost:5001` | MiroFish backend URL |
+| `WRAPPER_PORT` | `8001` | Port for the ESG wrapper |
+| `USE_CACHE` | `true` | Enable result caching (by supplier + violation hash) |
+| `CACHE_TTL_DAYS` | `7` | Cache time-to-live in days |
+| `SIMULATION_TIMEOUT_SECONDS` | `600` | Hard timeout for simulation (10 min) |
+
+### Safety Features
+
+- **Hard timeout**: Kills simulation after `SIMULATION_TIMEOUT_SECONDS` (default: 10 min)
+- **Rule-based fallback**: Returns instant risk scores if simulation fails/times out (critical=85, high=65, medium=40, low=20)
+- **Sequential lock**: Only one simulation runs at a time; concurrent requests get fallback results
+- **File cache**: Results cached by supplier + violation hash for 7 days in `backend/cache/`
+- **Automatic cleanup**: Deletes MiroFish project data after each simulation to prevent disk filling up
+
+### Cost Estimate
+
+With `gpt-4o-mini` + 5 simulation rounds + rule-based profiles:
+- **~$0.02-0.10 per simulation**
+- **~$1/week** at 10 simulations/week
+- Zep Cloud free tier sufficient for this volume
+
 ## 📬 Get in Touch
 
 <div align="center">

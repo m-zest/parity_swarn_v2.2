@@ -1,9 +1,7 @@
 services:
-  mirofish:
-    image: ghcr.io/666ghj/mirofish:latest
-    # Mirror image (replace above if pulling is slow)
-    # image: ghcr.nju.edu.cn/666ghj/mirofish:latest
-    container_name: mirofish
+  swarm-engine:
+    image: parity-swarm:latest
+    container_name: swarm-engine
     env_file:
       - .env
     ports:

@@ -934,7 +934,7 @@ def search_graph_tool():
     
     Request (JSON):
         {
-            "graph_id": "mirofish_xxxx",
+            "graph_id": "swarm_xxxx",
             "query": "search query",
             "limit": 10
         }
@@ -982,7 +982,7 @@ def get_graph_statistics_tool():
     
     Request (JSON):
         {
-            "graph_id": "mirofish_xxxx"
+            "graph_id": "swarm_xxxx"
         }
     """
     try:

@@ -2,10 +2,10 @@
   <div class="home-container">
     <!-- Top navigation bar -->
     <nav class="navbar">
-      <div class="nav-brand">MIROFISH</div>
+      <div class="nav-brand">PARITY SWARM</div>
       <div class="nav-links">
-        <a href="https://github.com/666ghj/MiroFish" target="_blank" class="github-link">
-          Visit our GitHub <span class="arrow">↗</span>
+        <a href="#" class="github-link">
+          GitHub <span class="arrow">↗</span>
         </a>
       </div>
     </nav>
@@ -26,7 +26,7 @@
           
           <div class="hero-desc">
             <p>
-              Even with just a piece of text, <span class=”highlight-bold”>MiroFish</span> can automatically generate a parallel world with up to <span class=”highlight-orange”>million-level Agents</span> based on the reality seeds within. Inject variables from a god's-eye view to find the <span class=”highlight-code”>”local optimum”</span> in complex group interactions under dynamic environments
+              Even with just a piece of text, <span class=”highlight-bold”>Parity Swarm</span> can automatically generate a parallel world with up to <span class=”highlight-orange”>million-level Agents</span> based on the reality seeds within. Inject variables from a god's-eye view to find the <span class=”highlight-code”>”local optimum”</span> in complex group interactions under dynamic environments
             </p>
             <p class="slogan-text">
               Let the future rehearse among Agents, let decisions prevail after a hundred battles<span class="blinking-cursor">_</span>
@@ -39,7 +39,7 @@
         <div class="hero-right">
           <!-- Logo section -->
           <div class="logo-container">
-            <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="MiroFish Logo" class="hero-logo" />
+            <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="Parity Swarm Logo" class="hero-logo" />
           </div>
           
           <button class="scroll-down-btn" @click="scrollToBottom">
@@ -180,7 +180,7 @@
                   rows="6"
                   :disabled="loading"
                 ></textarea>
-                <div class="model-badge">Engine: MiroFish-V1.0</div>
+                <div class="model-badge">Engine: Swarm-Engine-V1.0</div>
               </div>
             </div>
 

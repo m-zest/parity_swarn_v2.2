@@ -1,11 +1,11 @@
 [project]
-name = "mirofish-backend"
+name = "parity-swarm-backend"
 version = "0.1.0"
-description = "MiroFish - A concise and universal swarm intelligence engine for predicting anything"
+description = "Parity Swarm - A concise and universal swarm intelligence engine for predicting anything"
 requires-python = ">=3.11"
 license = { text = "AGPL-3.0" }
 authors = [
-    { name = "MiroFish Team" }
+    { name = "Parity Swarm Team" }
 ]
 
 dependencies = [
@@ -19,7 +19,7 @@ dependencies = [
     # Zep Cloud
     "zep-cloud==3.13.0",
     
-    # OASIS social media simulation
+    # Social media simulation
     "camel-oasis==0.2.5",
     "camel-ai==0.2.78",
     

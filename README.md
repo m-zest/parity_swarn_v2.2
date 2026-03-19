@@ -76,7 +76,7 @@ Title: "Swarm Red Teaming: Using Population Simulation to Discover AI Control Pr
 
 ## Acknowledgements
 
-Built on MiroFish (OASIS/CAMEL-AI). Used with permission.
+Built on open-source simulation infrastructure.
 
 ## License
 

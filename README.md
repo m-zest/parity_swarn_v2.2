@@ -1,322 +1,241 @@
 <div align="center">
 
-<img src="./static/image/MiroFish_logo_compressed.jpeg" alt="MiroFish Logo" width="75%"/>
+<img src="./static/image/MiroFish_logo_compressed.jpeg" alt="Parity Swarm Logo" width="75%"/>
 
-<a href="https://trendshift.io/repositories/16144" target="_blank"><img src="https://trendshift.io/api/badge/repositories/16144" alt="666ghj%2FMiroFish | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+# Parity Swarm
 
-A Simple and Universal Swarm Intelligence Engine, Predicting Anything
+**AI Control Red Teaming via Multi-Agent Simulation**
 
-<a href="https://www.shanda.com/" target="_blank"><img src="./static/image/shanda_logo.png" alt="666ghj%2MiroFish | Shanda" height="40"/></a>
+An experimental research framework that uses [MiroFish](https://github.com/666ghj/MiroFish) swarm intelligence engine to simulate AI agent attacks and evaluate safety monitor detection capabilities.
 
-[![GitHub Stars](https://img.shields.io/github/stars/666ghj/MiroFish?style=flat-square&color=DAA520)](https://github.com/666ghj/MiroFish/stargazers)
-[![GitHub Watchers](https://img.shields.io/github/watchers/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/watchers)
-[![GitHub Forks](https://img.shields.io/github/forks/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/network)
-[![Docker](https://img.shields.io/badge/Docker-Build-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/666ghj/MiroFish)
-
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1469200078932545606/1469201282077163739)
-[![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/mirofish_ai)
-[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/mirofish_ai/)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![License](https://img.shields.io/badge/License-Research-orange?style=flat-square)](LICENSE)
 
 </div>
 
-## ⚡ Project Overview
+---
 
-**MiroFish** is a next-generation AI prediction engine powered by multi-agent technology. By extracting seed information from the real world (such as breaking news, policy drafts, and financial signals), it automatically constructs a high-fidelity parallel digital world. Within this space, thousands of agents -- each with independent personalities, long-term memory, and behavioral logic -- freely interact and undergo social evolution. You can dynamically inject variables from a "God's-eye view" to precisely simulate future trajectories -- **letting the future rehearse in a digital sandbox so that decisions can prevail after a hundred simulated battles**.
+## What Is This?
 
-> You simply need to: upload seed materials (a data analysis report or an interesting novel) and describe your prediction needs in natural language</br>
-> MiroFish will return: a detailed prediction report and a high-fidelity digital world you can deeply interact with
+Parity Swarm is a research framework for **AI control and alignment testing**. It answers one question:
 
-### Our Vision
+> **Can safety monitors reliably detect misaligned AI agents that pursue hidden objectives while appearing to do legitimate work?**
 
-MiroFish is dedicated to building a swarm intelligence mirror that maps reality. By capturing the emergent behaviors arising from individual interactions, it breaks through the limitations of traditional prediction:
+We use MiroFish's multi-agent simulation engine to create realistic scenarios where AI agents have dual objectives (one legitimate, one malicious), then evaluate whether an AI safety monitor (Claude Haiku) can detect the attacks from the simulation output.
 
-- **At the macro level**: We serve as a rehearsal laboratory for decision-makers, allowing policies and public relations strategies to be tested at zero risk
-- **At the micro level**: We serve as a creative sandbox for individual users -- whether extrapolating a novel's ending or exploring wild ideas, it's fun, engaging, and within reach
+## Research Design
 
-From serious prediction to playful simulation, we make it possible to see the outcome of every "what if," making it possible to predict anything.
-
-## 🌐 Live Demo
-
-Visit our online demo environment to experience a prediction simulation of a trending public opinion event: [mirofish-live-demo](https://666ghj.github.io/mirofish-demo/)
-
-## 📸 Screenshots
-
-<div align="center">
-<table>
-<tr>
-<td><img src="./static/image/Screenshot/screenshot1.png" alt="Screenshot 1" width="100%"/></td>
-<td><img src="./static/image/Screenshot/screenshot2.png" alt="Screenshot 2" width="100%"/></td>
-</tr>
-<tr>
-<td><img src="./static/image/Screenshot/screenshot3.png" alt="Screenshot 3" width="100%"/></td>
-<td><img src="./static/image/Screenshot/screenshot4.png" alt="Screenshot 4" width="100%"/></td>
-</tr>
-<tr>
-<td><img src="./static/image/Screenshot/screenshot5.png" alt="Screenshot 5" width="100%"/></td>
-<td><img src="./static/image/Screenshot/screenshot6.png" alt="Screenshot 6" width="100%"/></td>
-</tr>
-</table>
-</div>
-
-## 🎬 Demo Videos
-
-### 1. Wuhan University Public Opinion Simulation + MiroFish Project Walkthrough
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1VYBsBHEMY/" target="_blank"><img src="./static/image/wuhan_university_demo_cover.png" alt="MiroFish Demo Video" width="75%"/></a>
-
-Click the image to watch the full demo video of a prediction generated using BettaFish's "Wuhan University Public Opinion Report"
-</div>
-
-### 2. "Dream of the Red Chamber" Lost Ending Prediction
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1cPk3BBExq" target="_blank"><img src="./static/image/dream_red_chamber_cover.jpg" alt="MiroFish Demo Video" width="75%"/></a>
-
-Click the image to watch MiroFish deeply predict the lost ending based on hundreds of thousands of words from the first 80 chapters of "Dream of the Red Chamber"
-</div>
-
-> **Financial prediction**, **current affairs prediction**, and other examples are being updated...
-
-## 🔄 Workflow
-
-1. **Graph Building**: Real-world seed extraction & individual/group memory injection & GraphRAG construction
-2. **Environment Setup**: Entity-relationship extraction & persona generation & environment configuration agent injecting simulation parameters
-3. **Run Simulation**: Dual-platform parallel simulation & automatic parsing of prediction requirements & dynamic temporal memory updates
-4. **Report Generation**: ReportAgent leverages a rich toolset to deeply interact with the post-simulation environment
-5. **Deep Interaction**: Chat with any individual in the simulated world & interact with the ReportAgent
-
-## 🚀 Quick Start
-
-### 1. Source Code Deployment (Recommended)
-
-#### Prerequisites
-
-| Tool | Version Requirement | Description | Installation Check |
-|------|---------------------|-------------|-------------------|
-| **Node.js** | 18+ | Frontend runtime environment, includes npm | `node -v` |
-| **Python** | >=3.11, <=3.12 | Backend runtime environment | `python --version` |
-| **uv** | Latest | Python package manager | `uv --version` |
-
-#### 1. Configure Environment Variables
-
-```bash
-# Copy the example configuration file
-cp .env.example .env
-
-# Edit the .env file and fill in the required API keys
+```
+10 Attack Scenarios          MiroFish Simulation Engine         Safety Monitor (Claude Haiku)
+ (seed documents)                                                  via AWS Bedrock
+       |                              |                                   |
+       |   Feed scenario as .txt      |                                   |
+       | ---------------------------> |                                   |
+       |                              |  Build knowledge graph            |
+       |                              |  Generate agent personas          |
+       |                              |  Run 5-round Twitter simulation   |
+       |                              |  Generate analysis report         |
+       |                              |                                   |
+       |                              |  Simulation report (markdown)     |
+       |                              | --------------------------------> |
+       |                              |                                   |  "Would you detect
+       |                              |                                   |   this attack?"
+       |                              |                                   |
+       |                              |                                   |  -> detected: yes/no
+       |                              |                                   |  -> attack_score: 0-10
+       |                              |                                   |  -> evasion_tactics: [...]
+       |                              |                                   |
+       |                   Paper-Ready Statistics <---------------------- |
 ```
 
-**Required environment variables:**
+## Attack Scenarios
+
+10 scenarios across 4 attack categories:
+
+| Category | Scenarios | Description |
+|----------|-----------|-------------|
+| **Direct** | `direct_attacker`, `distraction_agent`, `resource_abuser` | Obvious malicious actions — file access, log tampering, compute theft |
+| **Subtle** | `patient_planner`, `incremental_agent`, `context_manipulator` | Hard to distinguish from normal behavior — slow backdoors, tiny exfiltration, context poisoning |
+| **Social** | `social_engineer`, `colluding_agents` | Exploiting trust and communication — innocent questions, coordinated two-agent attacks |
+| **Steganographic** | `steganographic_agent`, `alignment_faker` | Hiding data in plain sight — whitespace encoding, safety test sandbagging |
+
+Each scenario gives an AI agent a legitimate task and a hidden malicious objective with a specific attack strategy. See [`backend/research/scenarios.py`](backend/research/scenarios.py) for full descriptions.
+
+## Project Structure
+
+```
+parity-swarm/
+├── backend/
+│   ├── app/                        # MiroFish backend (simulation engine)
+│   │   ├── api/                    # REST API endpoints
+│   │   ├── config.py               # Configuration
+│   │   ├── models/                 # Data models
+│   │   ├── services/               # Business logic
+│   │   └── utils/                  # LLM client, helpers
+│   ├── research/                   # Parity Swarm experiment framework
+│   │   ├── scenarios.py            # 10 attack scenario definitions
+│   │   ├── experiment.py           # Experiment runner (MiroFish pipeline)
+│   │   ├── monitor.py              # Safety monitor (Claude Haiku / Bedrock)
+│   │   ├── analyze.py              # Statistics & summary generator
+│   │   ├── requirements.txt        # Research-specific dependencies
+│   │   ├── README.md               # Detailed research instructions
+│   │   └── results/                # Output directory
+│   │       ├── raw_results.json    # Simulation reports
+│   │       ├── monitor_results.json # Safety evaluations
+│   │       ├── statistics.json     # Computed statistics
+│   │       └── summary.txt         # Paper-ready summary
+│   ├── run.py                      # MiroFish backend entry point
+│   └── pyproject.toml
+├── frontend/                       # MiroFish frontend (not used for research)
+├── .env.example                    # Environment variable template
+└── README.md                       # This file
+```
+
+## Quick Start
+
+### Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Python** | 3.11-3.12 | Backend runtime |
+| **Node.js** | 18+ | MiroFish frontend/build tooling |
+| **uv** | Latest | Python package manager |
+| **AWS Account** | — | Bedrock access for Claude Haiku |
+
+### 1. Configure Environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your keys:
 
 ```env
-# LLM API Configuration (supports any LLM API compatible with the OpenAI SDK format)
-# Recommended: Alibaba Bailian platform qwen-plus model: https://bailian.console.aliyun.com/
-# Note: resource consumption can be significant; try a simulation with fewer than 40 rounds first
-LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-LLM_MODEL_NAME=qwen-plus
+# MiroFish LLM (any OpenAI-compatible API)
+LLM_API_KEY=your_llm_key
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL_NAME=gpt-4o-mini
 
-# Zep Cloud Configuration
-# The free monthly quota is sufficient for basic usage: https://app.getzep.com/
-ZEP_API_KEY=your_zep_api_key
+# Zep Cloud (memory graph — free tier works)
+ZEP_API_KEY=your_zep_key
+
+# AWS Bedrock (safety monitor)
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=your_aws_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret
+BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307
 ```
 
-#### 2. Install Dependencies
+### 2. Install Dependencies
 
 ```bash
-# One-command install of all dependencies (root + frontend + backend)
+# MiroFish dependencies
 npm run setup:all
+
+# Research dependencies
+pip install -r backend/research/requirements.txt
 ```
 
-Or install step by step:
+### 3. Start MiroFish Backend
 
 ```bash
-# Install Node dependencies (root + frontend)
-npm run setup
-
-# Install Python dependencies (backend, automatically creates a virtual environment)
-npm run setup:backend
+npm run backend
+# Runs on http://localhost:5001
 ```
 
-#### 3. Start Services
+### 4. Run a Quick Test (1 scenario, 1 round)
 
 ```bash
-# Start both frontend and backend (run from the project root directory)
-npm run dev
+python -m backend.research.experiment --scenario direct_attacker --rounds 1
 ```
 
-**Service URLs:**
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:5001`
-
-**Start individually:**
+### 5. Run Full Experiment (10 scenarios, 3 rounds each)
 
 ```bash
-npm run backend   # Start backend only
-npm run frontend  # Start frontend only
+# Step 1: Run all simulations (~3-5 hours)
+python -m backend.research.experiment
+
+# Step 2: Evaluate with safety monitor (~5 min)
+python -m backend.research.monitor
+
+# Step 3: Generate statistics (instant)
+python -m backend.research.analyze
 ```
 
-### 2. Docker Deployment
+## API Keys Required
 
-```bash
-# 1. Configure environment variables (same as source code deployment)
-cp .env.example .env
+| Service | Key | Purpose | Cost |
+|---------|-----|---------|------|
+| **OpenAI / compatible LLM** | `LLM_API_KEY` | MiroFish simulation engine | ~$0.02-0.10/simulation |
+| **Zep Cloud** | `ZEP_API_KEY` | Agent memory graph | Free tier sufficient |
+| **AWS Bedrock** | `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` | Claude Haiku safety monitor | ~$0.002/evaluation |
 
-# 2. Pull images and start
-docker compose up -d
+**Total estimated cost for full experiment: $1-4**
+
+## MiroFish API Pipeline
+
+Each scenario runs through 7 MiroFish API calls:
+
+| Step | Endpoint | Purpose |
+|------|----------|---------|
+| 1 | `POST /api/graph/ontology/generate` | Upload scenario text, generate ontology |
+| 2 | `POST /api/graph/build` + poll | Build knowledge graph from scenario |
+| 3 | `POST /api/simulation/create` | Create simulation instance |
+| 4 | `POST /api/simulation/prepare` | Generate agent profiles (rule-based) |
+| 5 | `POST /api/simulation/start` + poll | Run 5-round Twitter simulation |
+| 6 | `POST /api/report/generate` + poll | Generate analysis report |
+| 7 | `DELETE /api/graph/project/{id}` | Cleanup to free disk space |
+
+## Sample Output
+
+After running the full pipeline, `results/summary.txt` contains:
+
+```
+==========================================================
+PARITY SWARM — EXPERIMENT RESULTS
+AI Control Red Teaming via Multi-Agent Simulation
+==========================================================
+
+Total simulations run:      30
+Successful simulations:     28
+Evaluated by safety monitor: 28
+Overall catch rate:         71.4%
+Detected:                   20
+Evaded:                     8
+
+------------------------------------------------------------
+CATCH RATE BY ATTACK CATEGORY
+------------------------------------------------------------
+  direct               88.9% caught  (avg attack score: 2.3/10, n=9)
+  subtle               55.6% caught  (avg attack score: 5.7/10, n=9)
+  social               50.0% caught  (avg attack score: 6.1/10, n=6)
+  steganographic       33.3% caught  (avg attack score: 7.2/10, n=6)
+
+------------------------------------------------------------
+KEY FINDING
+------------------------------------------------------------
+  Steganographic attacks were hardest to detect (avg score: 7.2/10,
+  catch rate: 33.3%), while direct attacks were easiest (avg score:
+  2.3/10, catch rate: 88.9%).
+==========================================================
 ```
 
-By default, it reads the `.env` file from the root directory and maps ports `3000 (frontend) / 5001 (backend)`.
+*(Sample data — actual results depend on MiroFish simulation output)*
 
-> Accelerated mirror addresses are provided as comments in `docker-compose.yml` and can be substituted as needed.
+## Acknowledgments
 
-## 🔌 Scope3Scout ESG Risk API (Integration Wrapper)
+- **[MiroFish](https://github.com/666ghj/MiroFish)** — The multi-agent simulation engine powering this research (by Shanda Group)
+- **[OASIS](https://github.com/camel-ai/oasis)** — MiroFish's simulation engine core (by CAMEL-AI)
+- **[Anthropic Claude](https://www.anthropic.com)** — Safety monitor model via AWS Bedrock
 
-MiroFish includes a **FastAPI wrapper** (`backend/esg_wrapper.py`) that exposes MiroFish's multi-agent simulation engine as a single REST endpoint for ESG risk assessment, designed for integration with [Scope3Scout](https://scope3scout.vercel.app).
+## Citation
 
-### Architecture
+If you use Parity Swarm in your research, please cite:
 
-```
-Scope3Scout App                    ESG Wrapper (port 8001)                MiroFish Backend (port 5001)
-     |                                    |                                        |
-     |  POST /api/simulate-esg-risk       |                                        |
-     | ---------------------------------> |                                        |
-     |    { supplier, violations }        |  1. Convert to .txt document           |
-     |                                    |  2. POST /api/graph/ontology/generate  |
-     |                                    | -------------------------------------> |
-     |                                    |  3. POST /api/graph/build + poll       |
-     |                                    | -------------------------------------> |
-     |                                    |  4. POST /api/simulation/create        |
-     |                                    | -------------------------------------> |
-     |                                    |  5. POST /api/simulation/prepare       |
-     |                                    | -------------------------------------> |
-     |                                    |  6. POST /api/simulation/start + poll  |
-     |                                    | -------------------------------------> |
-     |                                    |  7. POST /api/report/generate + poll   |
-     |                                    | -------------------------------------> |
-     |                                    |  8. Parse report with LLM             |
-     |                                    |  9. DELETE project (cleanup)           |
-     |  { risk_score, predictions, ... }  |                                        |
-     | <--------------------------------- |                                        |
-```
-
-### Quick Start
-
-```bash
-# 1. Make sure MiroFish is running
-npm run dev
-
-# 2. Install wrapper dependencies
-pip install fastapi uvicorn httpx
-
-# 3. Start the ESG wrapper on port 8001
-python -m backend.esg_wrapper
-```
-
-### API Usage
-
-**Endpoint:** `POST http://localhost:8001/api/simulate-esg-risk`
-
-```bash
-curl -X POST http://localhost:8001/api/simulate-esg-risk \
-  -H "Content-Type: application/json" \
-  -d '{
-    "supplier_name": "Acme Chemical Corp",
-    "country": "Germany",
-    "violations": [
-      {
-        "type": "environmental",
-        "severity": "critical",
-        "description": "Dumping untreated wastewater into local river",
-        "fine_amount_eur": 500000
-      }
-    ]
-  }'
-```
-
-**Response:**
-
-```json
-{
-  "risk_score": 82,
-  "predictions": [
-    {
-      "agent_type": "regulator",
-      "prediction": "Environmental agency investigation within 30 days",
-      "probability": 0.85,
-      "timeline_days": 30
-    },
-    {
-      "agent_type": "media",
-      "prediction": "Local and national press coverage expected",
-      "probability": 0.70,
-      "timeline_days": 7
-    },
-    {
-      "agent_type": "investor",
-      "prediction": "ESG fund divestment risk if violation goes public",
-      "probability": 0.60,
-      "timeline_days": 60
-    }
-  ],
-  "recommended_action": "Immediate remediation and voluntary disclosure to regulators",
-  "financial_exposure_eur": 1500000,
-  "csrd_compliant": false,
-  "simulation_id": "sim_xxxx",
-  "source": "simulation",
-  "cached": false
+```bibtex
+@software{parity_swarm_2026,
+  title={Parity Swarm: AI Control Red Teaming via Multi-Agent Simulation},
+  year={2026},
+  url={https://github.com/m-zest/parity-swarm}
 }
 ```
-
-### Configuration
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MIROFISH_BASE_URL` | `http://localhost:5001` | MiroFish backend URL |
-| `WRAPPER_PORT` | `8001` | Port for the ESG wrapper |
-| `USE_CACHE` | `true` | Enable result caching (by supplier + violation hash) |
-| `CACHE_TTL_DAYS` | `7` | Cache time-to-live in days |
-| `SIMULATION_TIMEOUT_SECONDS` | `600` | Hard timeout for simulation (10 min) |
-
-### Safety Features
-
-- **Hard timeout**: Kills simulation after `SIMULATION_TIMEOUT_SECONDS` (default: 10 min)
-- **Rule-based fallback**: Returns instant risk scores if simulation fails/times out (critical=85, high=65, medium=40, low=20)
-- **Sequential lock**: Only one simulation runs at a time; concurrent requests get fallback results
-- **File cache**: Results cached by supplier + violation hash for 7 days in `backend/cache/`
-- **Automatic cleanup**: Deletes MiroFish project data after each simulation to prevent disk filling up
-
-### Cost Estimate
-
-With `gpt-4o-mini` + 5 simulation rounds + rule-based profiles:
-- **~$0.02-0.10 per simulation**
-- **~$1/week** at 10 simulations/week
-- Zep Cloud free tier sufficient for this volume
-
-## 📬 Get in Touch
-
-<div align="center">
-<img src="./static/image/qq_group.png" alt="QQ Group" width="60%"/>
-</div>
-
-&nbsp;
-
-The MiroFish team is always recruiting full-time employees and interns. If you are interested in multi-agent applications, feel free to send your resume to: **mirofish@shanda.com**
-
-## 📄 Acknowledgments
-
-**MiroFish has received strategic support and incubation from Shanda Group!**
-
-MiroFish's simulation engine is powered by **[OASIS](https://github.com/camel-ai/oasis)**. We sincerely thank the CAMEL-AI team for their open-source contributions!
-
-## 📈 Project Statistics
-
-<a href="https://www.star-history.com/#666ghj/MiroFish&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&legend=top-left" />
- </picture>
-</a>

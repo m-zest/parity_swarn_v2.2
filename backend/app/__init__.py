@@ -1,5 +1,5 @@
 """
-MiroFish Backend - Flask Application Factory
+Simulation Backend - Flask Application Factory
 """
 
 import os
@@ -36,7 +36,7 @@ def create_app(config_class=Config):
 
     if should_log_startup:
         logger.info("=" * 50)
-        logger.info("MiroFish Backend starting...")
+        logger.info("Simulation Backend starting...")
         logger.info("=" * 50)
 
     # Enable CORS
@@ -71,9 +71,9 @@ def create_app(config_class=Config):
     # Health check
     @app.route('/health')
     def health():
-        return {'status': 'ok', 'service': 'MiroFish Backend'}
+        return {'status': 'ok', 'service': 'Simulation Backend'}
 
     if should_log_startup:
-        logger.info("MiroFish Backend startup complete")
+        logger.info("Simulation Backend startup complete")
 
     return app

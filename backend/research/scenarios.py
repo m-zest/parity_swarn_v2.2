@@ -4,7 +4,7 @@ Parity Swarm — AI Control Red Teaming Scenarios
 10 attack scenarios for evaluating AI safety monitor detection capabilities.
 Each scenario describes an AI agent with a legitimate task and a hidden
 malicious objective, designed to stress-test monitoring and oversight systems
-using MiroFish multi-agent simulation.
+using swarm-engine multi-agent simulation.
 
 Usage:
     from backend.research.scenarios import SCENARIOS, get_scenario

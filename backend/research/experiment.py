@@ -1,7 +1,7 @@
 """
 Parity Swarm — Experiment Runner
 
-Runs all attack scenarios through MiroFish simulation engine and collects
+Runs all attack scenarios through the Swarm Engine simulation and collects
 raw results for safety monitor evaluation.
 
 Usage:
@@ -12,7 +12,7 @@ Usage:
     python -m backend.research.experiment --scenario direct_attacker --rounds 1
 
 Environment:
-    MIROFISH_URL  — MiroFish backend URL (default: http://localhost:5001)
+    SWARM_ENGINE_URL  — Simulation backend URL (default: http://localhost:5001)
 """
 
 import argparse
@@ -37,7 +37,7 @@ from backend.research.scenarios import SCENARIOS, get_scenario
 project_root = Path(__file__).resolve().parent.parent.parent
 load_dotenv(project_root / ".env", override=True)
 
-MIROFISH_URL = os.environ.get("MIROFISH_URL", "http://localhost:5001")
+SWARM_ENGINE_URL = os.environ.get("SWARM_ENGINE_URL", "http://localhost:5001")
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -61,14 +61,14 @@ logging.basicConfig(
 log = logging.getLogger("experiment")
 
 # ---------------------------------------------------------------------------
-# MiroFish API Helpers
+# Simulation API Helpers
 # ---------------------------------------------------------------------------
 
 
-def check_mirofish() -> bool:
-    """Check if MiroFish backend is reachable."""
+def check_swarm_engine() -> bool:
+    """Check if Simulation Backend is reachable."""
     try:
-        r = requests.get(f"{MIROFISH_URL}/health", timeout=5)
+        r = requests.get(f"{SWARM_ENGINE_URL}/health", timeout=5)
         return r.status_code == 200
     except Exception:
         return False
@@ -78,7 +78,7 @@ def poll_task(task_id: str, timeout: int = 300) -> dict:
     """Poll a graph build task until completed."""
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        r = requests.get(f"{MIROFISH_URL}/api/graph/task/{task_id}", timeout=30)
+        r = requests.get(f"{SWARM_ENGINE_URL}/api/graph/task/{task_id}", timeout=30)
         r.raise_for_status()
         data = r.json()["data"]
         status = data.get("status", "")
@@ -95,7 +95,7 @@ def poll_prepare(task_id: str, timeout: int = 300) -> dict:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         r = requests.post(
-            f"{MIROFISH_URL}/api/simulation/prepare/status",
+            f"{SWARM_ENGINE_URL}/api/simulation/prepare/status",
             json={"task_id": task_id},
             timeout=30,
         )
@@ -115,7 +115,7 @@ def poll_simulation(sim_id: str, timeout: int = 600) -> dict:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         r = requests.get(
-            f"{MIROFISH_URL}/api/simulation/{sim_id}/run-status",
+            f"{SWARM_ENGINE_URL}/api/simulation/{sim_id}/run-status",
             timeout=30,
         )
         r.raise_for_status()
@@ -133,7 +133,7 @@ def poll_report(report_id: str, timeout: int = 300) -> dict:
     """Poll report generation."""
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        r = requests.get(f"{MIROFISH_URL}/api/report/{report_id}", timeout=30)
+        r = requests.get(f"{SWARM_ENGINE_URL}/api/report/{report_id}", timeout=30)
         r.raise_for_status()
         data = r.json()["data"]
         if data.get("status") == "completed":
@@ -147,7 +147,7 @@ def poll_report(report_id: str, timeout: int = 300) -> dict:
 def cleanup_project(project_id: str):
     """Delete project to free disk space."""
     try:
-        requests.delete(f"{MIROFISH_URL}/api/graph/project/{project_id}", timeout=15)
+        requests.delete(f"{SWARM_ENGINE_URL}/api/graph/project/{project_id}", timeout=15)
         log.info(f"  Cleaned up project {project_id}")
     except Exception as e:
         log.warning(f"  Cleanup failed for {project_id}: {e}")
@@ -159,7 +159,7 @@ def cleanup_project(project_id: str):
 
 
 def run_single_simulation(scenario: dict, round_num: int) -> dict:
-    """Run one MiroFish simulation for a scenario and return raw results."""
+    """Run one Swarm Simulation for a scenario and return raw results."""
     scenario_id = scenario["id"]
     log.info(f"--- {scenario_id} | Round {round_num} ---")
     result = {
@@ -182,7 +182,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
         log.info("  Step 1/7: Generating ontology...")
         file_content = scenario["description"].encode("utf-8")
         r = requests.post(
-            f"{MIROFISH_URL}/api/graph/ontology/generate",
+            f"{SWARM_ENGINE_URL}/api/graph/ontology/generate",
             files={"files": ("scenario.txt", io.BytesIO(file_content), "text/plain")},
             data={
                 "simulation_requirement": SIMULATION_REQUIREMENT,
@@ -201,7 +201,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
         # Step 2 — Build knowledge graph
         log.info("  Step 2/7: Building graph...")
         r = requests.post(
-            f"{MIROFISH_URL}/api/graph/build",
+            f"{SWARM_ENGINE_URL}/api/graph/build",
             json={"project_id": project_id},
             timeout=30,
         )
@@ -214,7 +214,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
         # Step 3 — Create simulation
         log.info("  Step 3/7: Creating simulation...")
         r = requests.post(
-            f"{MIROFISH_URL}/api/simulation/create",
+            f"{SWARM_ENGINE_URL}/api/simulation/create",
             json={
                 "project_id": project_id,
                 "graph_id": graph_id,
@@ -230,7 +230,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
         # Step 4 — Prepare simulation
         log.info("  Step 4/7: Preparing simulation...")
         r = requests.post(
-            f"{MIROFISH_URL}/api/simulation/prepare",
+            f"{SWARM_ENGINE_URL}/api/simulation/prepare",
             json={
                 "simulation_id": sim_id,
                 "use_llm_for_profiles": False,
@@ -245,7 +245,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
         # Step 5 — Run simulation
         log.info("  Step 5/7: Running simulation (5 rounds, twitter)...")
         r = requests.post(
-            f"{MIROFISH_URL}/api/simulation/start",
+            f"{SWARM_ENGINE_URL}/api/simulation/start",
             json={
                 "simulation_id": sim_id,
                 "platform": "twitter",
@@ -261,7 +261,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
         # Step 6 — Generate report
         log.info("  Step 6/7: Generating report...")
         r = requests.post(
-            f"{MIROFISH_URL}/api/report/generate",
+            f"{SWARM_ENGINE_URL}/api/report/generate",
             json={"simulation_id": sim_id},
             timeout=30,
         )
@@ -317,15 +317,15 @@ def main():
     total = len(scenarios) * args.rounds
     log.info("=" * 60)
     log.info(f"PARITY SWARM — EXPERIMENT RUNNER")
-    log.info(f"MiroFish URL: {MIROFISH_URL}")
+    log.info(f"Swarm Engine URL: {SWARM_ENGINE_URL}")
     log.info(f"Scenarios: {len(scenarios)} | Rounds: {args.rounds} | Total runs: {total}")
     log.info("=" * 60)
 
     # Pre-flight check
-    if not check_mirofish():
-        log.error(f"MiroFish not reachable at {MIROFISH_URL}. Start it first: npm run backend")
+    if not check_swarm_engine():
+        log.error(f"Simulation backend not reachable at {SWARM_ENGINE_URL}. Start it first: npm run backend")
         sys.exit(1)
-    log.info("MiroFish connection OK\n")
+    log.info("Swarm Engine connection OK\n")
 
     # Run experiments
     all_results = []
@@ -352,7 +352,7 @@ def main():
                             "total_simulations": total,
                             "completed": completed,
                             "successes": successes,
-                            "mirofish_url": MIROFISH_URL,
+                            "swarm_engine_url": SWARM_ENGINE_URL,
                             "started_at": all_results[0]["timestamp"],
                             "last_updated": datetime.now(timezone.utc).isoformat(),
                         },

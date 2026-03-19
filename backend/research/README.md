@@ -2,7 +2,7 @@
 
 ## What This Does
 
-Uses MiroFish multi-agent simulation to automatically discover attack strategies against AI safety monitors.
+Uses Swarm Engine multi-agent simulation to automatically discover attack strategies against AI safety monitors.
 
 ## Files
 
@@ -28,7 +28,7 @@ Fill in required keys:
 - `ZEP_API_KEY` (Zep Cloud free tier)
 - Either `ANTHROPIC_API_KEY` or `GEMINI_API_KEY`
 
-### Step 3: Start MiroFish
+### Step 3: Start Simulation Backend
 
 ```bash
 npm run dev

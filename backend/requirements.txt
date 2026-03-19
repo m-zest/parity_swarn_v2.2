@@ -1,5 +1,5 @@
 # ===========================================
-# MiroFish Backend Dependencies
+# Parity Swarm Backend Dependencies
 # ===========================================
 # Python 3.11+ required
 # Install: pip install -r requirements.txt
@@ -16,8 +16,8 @@ openai>=1.0.0
 # ============= Zep Cloud =============
 zep-cloud==3.13.0
 
-# ============= OASIS Social Media Simulation =============
-# OASIS social simulation framework
+# ============= Social Media Simulation =============
+# Social simulation framework
 camel-oasis==0.2.5
 camel-ai==0.2.78
 

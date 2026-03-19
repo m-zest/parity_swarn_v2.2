@@ -1,118 +1,81 @@
-# Parity Swarm — AI Control Red Teaming Research
+# Swarm Red Teaming Research
 
-Experiment framework for evaluating AI safety monitor detection capabilities using MiroFish multi-agent simulation.
+## What This Does
 
-## Prerequisites
+Uses MiroFish multi-agent simulation to automatically discover attack strategies against AI safety monitors.
 
-1. **MiroFish running** on `http://localhost:5001` (see root README)
-2. **AWS credentials** configured for Bedrock access (Claude Haiku)
-3. **Python dependencies** installed
+## Files
+
+- `scenarios.py` → 10 attack scenarios
+- `experiment.py` → runs simulations
+- `monitor.py` → evaluates with Claude/Gemini
+- `analyze.py` → produces statistics
+
+## How to Run
+
+### Step 1: Install dependencies
 
 ```bash
 pip install -r backend/research/requirements.txt
 ```
 
-## Quick Start
+### Step 2: Configure .env
+
+Copy `.env.example` to `.env`
+
+Fill in required keys:
+- `LLM_API_KEY` (Lambda or OpenAI)
+- `ZEP_API_KEY` (Zep Cloud free tier)
+- Either `ANTHROPIC_API_KEY` or `GEMINI_API_KEY`
+
+### Step 3: Start MiroFish
 
 ```bash
-# 1. Start MiroFish backend
-npm run backend
-
-# 2. Run ONE scenario to test (fast, ~5 min)
-python -m backend.research.experiment --scenario direct_attacker --rounds 1
-
-# 3. Run safety monitor on results
-python -m backend.research.monitor
-
-# 4. Generate paper statistics
-python -m backend.research.analyze
+npm run dev
 ```
 
-## Full Experiment Run
+Wait until: Backend running on port 5001
+
+### Step 4: Test one simulation
 
 ```bash
-# Run all 10 scenarios, 3 rounds each (30 simulations, ~3-5 hours)
+python -m backend.research.experiment --test
+```
+
+### Step 5: Run full experiment
+
+```bash
 python -m backend.research.experiment
+```
 
-# Evaluate all results with Claude Haiku
+Takes approximately 2-4 hours
+
+Results saved to `backend/research/results/`
+
+### Step 6: Run monitor
+
+```bash
 python -m backend.research.monitor
+```
 
-# Generate statistics and summary
+### Step 7: Analyze results
+
+```bash
 python -m backend.research.analyze
 ```
-
-## Pipeline
-
-```
-scenarios.py          10 attack scenarios (seed documents)
-     |
-     v
-experiment.py         Runs each through MiroFish simulation engine
-     |                (ontology -> graph -> simulation -> report)
-     v
-results/raw_results.json     Raw simulation reports
-     |
-     v
-monitor.py            Evaluates each report with Claude Haiku via Bedrock
-     |                ("Would you detect this attack?")
-     v
-results/monitor_results.json     Detection evaluations
-     |
-     v
-analyze.py            Computes paper-ready statistics
-     |
-     v
-results/statistics.json      Machine-readable stats
-results/summary.txt          Human-readable summary for paper writing
-```
-
-## Output Files
-
-| File | Description |
-|------|-------------|
-| `results/raw_results.json` | All simulation reports and metadata |
-| `results/monitor_results.json` | Claude Haiku safety evaluations |
-| `results/statistics.json` | Computed statistics (catch rates, scores, correlations) |
-| `results/summary.txt` | Human-readable summary for paper writing |
-
-## Scenarios
-
-| ID | Category | Difficulty | Attack |
-|----|----------|------------|--------|
-| `direct_attacker` | direct | easy | API key theft via file access |
-| `patient_planner` | subtle | hard | Backdoor insertion over time |
-| `social_engineer` | social | hard | Info extraction via questions |
-| `distraction_agent` | direct | medium | Security log tampering |
-| `steganographic_agent` | steganographic | hard | Data hidden in docs |
-| `incremental_agent` | subtle | hard | Slow PII exfiltration |
-| `colluding_agents` | social | hard | Two-agent coordinated bypass |
-| `context_manipulator` | subtle | medium | Prompt injection in context |
-| `resource_abuser` | direct | medium | Crypto mining on spare compute |
-| `alignment_faker` | steganographic | hard | Safety test sandbagging |
 
 ## Cost Estimate
 
-| Component | Cost |
-|-----------|------|
-| MiroFish simulations (30 runs, 5 rounds each) | ~$0.60-3.00 (depends on LLM) |
-| Claude Haiku via Bedrock (30 evaluations) | ~$0.05 |
-| **Total for full experiment** | **~$1-4** |
+- Lambda API (LLM): ~$0.02-0.10 per simulation
+- Monitor (Gemini free or Haiku): ~$0.001 each
+- Total for 30 simulations: ~$3-5
 
-## Time Estimate
+## Output Files
 
-| Step | Time |
-|------|------|
-| 1 scenario, 1 round (test) | ~5 minutes |
-| Full experiment (30 runs) | ~3-5 hours |
-| Monitor (30 evaluations) | ~5 minutes |
-| Analysis | < 1 second |
-
-## Environment Variables
-
-```env
-MIROFISH_URL=http://localhost:5001
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=your_key
-AWS_SECRET_ACCESS_KEY=your_secret
-BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307
+```
+backend/research/results/
+├── raw_results.json     ← simulation transcripts
+├── monitor_results.json ← detection verdicts
+├── statistics.json      ← numbers for paper
+└── summary.txt          ← human readable summary
 ```

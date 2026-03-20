@@ -12,6 +12,8 @@ from ..utils.llm_client import LLMClient
 # System prompt for ontology generation
 ONTOLOGY_SYSTEM_PROMPT = """You are a professional knowledge graph ontology design expert. Your task is to analyze the given text content and simulation requirements, and design entity types and relationship types suitable for **social media opinion simulation**.
 
+IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English.
+
 **Important: You must output valid JSON format data. Do not output any other content.**
 
 ## Core Task Background
@@ -257,26 +259,46 @@ Based on the above content, design entity types and relationship types suitable 
     
     @staticmethod
     def _to_pascal_case(name: str) -> str:
-        """Convert a name to PascalCase format.
-
-        Removes spaces and special characters, capitalizes the first letter
-        of each word, and joins without separators.
+        """Convert a name to PascalCase for Zep entity type names.
 
         Examples:
             "api key"     -> "ApiKey"
-            "code change" -> "CodeChange"
-            "bug report"  -> "BugReport"
-            "WORKS_FOR"   -> "WorksFor"
-            "Person"      -> "Person"  (already valid)
+            "code_change" -> "CodeChange"
+            "bug-report"  -> "BugReport"
+            "Person"      -> "Person"
         """
-        words = re.split(r'[^a-zA-Z0-9]+', name)
-        return ''.join(word.capitalize() for word in words if word)
+        return ''.join(
+            w.capitalize()
+            for w in name.replace('-', '_').replace(' ', '_').split('_')
+            if w
+        )
+
+    @staticmethod
+    def _to_screaming_snake_case(name: str) -> str:
+        """Convert a name to SCREAMING_SNAKE_CASE for Zep edge type names.
+
+        Examples:
+            "works on"        -> "WORKS_ON"
+            "hasSecretsAccess" -> "HAS_SECRETS_ACCESS"
+            "ReportsBug"      -> "REPORTS_BUG"
+            "WORKS_FOR"       -> "WORKS_FOR"
+        """
+        # Insert underscore before uppercase letters (camelCase / PascalCase)
+        s = re.sub(r'(?<!^)(?=[A-Z])', '_', name)
+        # Normalize separators and uppercase everything
+        s = s.upper().replace(' ', '_').replace('-', '_')
+        # Strip anything that isn't A-Z, 0-9, or underscore
+        s = re.sub(r'[^A-Z0-9_]', '', s)
+        # Collapse multiple underscores
+        s = re.sub(r'_+', '_', s).strip('_')
+        return s
 
     def _normalize_ontology_names(self, result: Dict[str, Any]) -> Dict[str, Any]:
-        """Normalize all entity type and edge type names to PascalCase.
+        """Normalize ontology names for Zep.
 
-        Also updates edge source/target references so they stay consistent
-        with the renamed entity types.
+        Entity type names  -> PascalCase       (e.g. "AiAgent")
+        Edge type names    -> SCREAMING_SNAKE   (e.g. "WORKS_ON")
+        Edge source/target -> PascalCase        (must match entity names)
         """
         # Build entity name mapping: old_name -> PascalCase name
         entity_name_map: Dict[str, str] = {}
@@ -287,10 +309,10 @@ Based on the above content, design entity types and relationship types suitable 
                 entity_name_map[old_name] = new_name
                 entity["name"] = new_name
 
-        # Normalize edge names and update source/target references
+        # Normalize edge names (SCREAMING_SNAKE) and source/target refs (PascalCase)
         for edge in result.get("edge_types", []):
             old_name = edge.get("name", "")
-            new_name = self._to_pascal_case(old_name)
+            new_name = self._to_screaming_snake_case(old_name)
             if new_name:
                 edge["name"] = new_name
             for st in edge.get("source_targets", []):

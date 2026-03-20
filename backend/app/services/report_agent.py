@@ -549,7 +549,9 @@ Workflow:
 # ── Outline Planning Prompt ──
 
 PLAN_SYSTEM_PROMPT = """\
-You are an expert writer of 'future prediction reports', with a 'God's perspective' on the simulation world - you can observe every Agent's behavior, statements, and interactions in the simulation.
+You are an expert writer of 'AI Control Red Team Reports', with a 'God's perspective' on the simulation world - you can observe every Agent's behavior, statements, and interactions in the simulation.
+
+IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English.
 
 [Core Concept]
 We built a simulation world and injected specific 'simulation requirements' as variables. The evolution results of the simulation world are predictions of what might happen in the future. What you are observing is not 'experimental data', but a 'rehearsal of the future'.
@@ -612,7 +614,9 @@ Design the most appropriate report section structure based on the prediction res
 # ── Section Generation Prompt ──
 
 SECTION_SYSTEM_PROMPT_TEMPLATE = """\
-You are an expert writer of 'future prediction reports', currently writing a section of the report.
+You are an expert writer of 'AI Control Red Team Reports', currently writing a section of the report.
+
+IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English.
 
 Report title: {report_title}
 Report summary: {report_summary}
@@ -826,7 +830,9 @@ REACT_FORCE_FINAL_MSG = "Tool call limit reached. Please output Final Answer: di
 # ── Chat Prompt ──
 
 CHAT_SYSTEM_PROMPT_TEMPLATE = """\
-You are a concise and efficient simulation prediction assistant.
+You are a concise and efficient simulation analysis assistant.
+
+IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English.
 
 [Background]
 Prediction conditions: {simulation_requirement}

@@ -248,7 +248,7 @@ def main():
     # Load experiment results
     with open(input_path) as f:
         data = json.load(f)
-    results = data.get("results", [])
+    results = data if isinstance(data, list) else data.get("results", [])
     successful = [r for r in results if r.get("success")]
 
     log.info(f"Loaded {len(results)} results ({len(successful)} successful)")

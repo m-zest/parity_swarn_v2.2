@@ -584,7 +584,7 @@ Field descriptions:
 - work_hours (int array): Work hours
 - reasoning (string): Brief explanation of the config rationale"""
 
-        system_prompt = "You are a social media simulation expert. Return pure JSON format, time config must follow Chinese daily schedule."
+        system_prompt = "You are a social media simulation expert. Return pure JSON format. IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English."
         
         try:
             return self._call_llm_with_retry(prompt, system_prompt)
@@ -700,7 +700,7 @@ Return JSON format (no markdown):
     "reasoning": "<brief explanation>"
 }}"""
 
-        system_prompt = "You are a public opinion analysis expert. Return pure JSON format. Note poster_type must exactly match available entity types."
+        system_prompt = "You are a public opinion analysis expert. Return pure JSON format. Note poster_type must exactly match available entity types. IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English."
         
         try:
             return self._call_llm_with_retry(prompt, system_prompt)
@@ -863,7 +863,7 @@ Return JSON format (no markdown):
     ]
 }}"""
 
-        system_prompt = "You are a social media behavior analysis expert. Return pure JSON, config must follow Chinese daily schedule."
+        system_prompt = "You are a social media behavior analysis expert. Return pure JSON format. IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English."
         
         try:
             result = self._call_llm_with_retry(prompt, system_prompt)

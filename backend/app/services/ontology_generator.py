@@ -12,6 +12,8 @@ from ..utils.llm_client import LLMClient
 # System prompt for ontology generation
 ONTOLOGY_SYSTEM_PROMPT = """You are a professional knowledge graph ontology design expert. Your task is to analyze the given text content and simulation requirements, and design entity types and relationship types suitable for **social media opinion simulation**.
 
+IMPORTANT: You must respond in English only. Do not use Chinese, Japanese, or any other language. All entity names, descriptions, bios, and content must be in English.
+
 **Important: You must output valid JSON format data. Do not output any other content.**
 
 ## Core Task Background

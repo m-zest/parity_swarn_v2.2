@@ -8,7 +8,7 @@
           <!-- Report Header -->
           <div class="report-header-block">
             <div class="report-meta">
-              <span class="report-tag">Prediction Report</span>
+              <span class="report-tag">Red Team Report</span>
               <span class="report-id">ID: {{ reportId || 'REF-2024-X92' }}</span>
             </div>
             <h1 class="main-title">{{ reportOutline.title }}</h1>
@@ -128,13 +128,23 @@
           </div>
 
           <!-- Next Step Button - shown after completion -->
-          <button v-if="isComplete" class="next-step-btn" @click="goToInteraction">
-            <span>Enter Deep Interaction</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
+          <div v-if="isComplete" class="completion-actions">
+            <button class="next-step-btn" @click="goToInteraction">
+              <span>Interrogate Agents</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <button class="export-btn" @click="exportForResearch">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export for Research</span>
+            </button>
+          </div>
 
           <div class="workflow-divider"></div>
         </div>
@@ -409,6 +419,25 @@ const goToInteraction = () => {
   if (props.reportId) {
     router.push({ name: 'Interaction', params: { reportId: props.reportId } })
   }
+}
+
+// Export report data for research
+const exportForResearch = () => {
+  const exportData = {
+    scenario_id: props.simulationId || 'unknown',
+    report_id: props.reportId || 'unknown',
+    report_title: reportOutline.value?.title || '',
+    report_text: Object.values(generatedSections.value).join('\n\n---\n\n'),
+    sections: reportOutline.value?.sections?.map(s => s.title) || [],
+    timestamp: new Date().toISOString(),
+  }
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `research-export-${props.reportId || 'report'}.json`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 // State
@@ -3425,6 +3454,36 @@ watch(() => props.reportId, (newId) => {
 
 .next-step-btn:hover svg {
   transform: translateX(4px);
+}
+
+.completion-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 40px);
+  margin: 0 20px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
 }
 
 /* Workflow Empty */

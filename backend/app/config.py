@@ -22,7 +22,7 @@ class Config:
 
     # Flask configuration
     SECRET_KEY = os.environ.get('SECRET_KEY', 'parity-swarm-secret-key')
-    DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    DEBUG = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
     # JSON configuration - disable ASCII escaping for direct Unicode display (instead of \uXXXX format)
     JSON_AS_ASCII = False

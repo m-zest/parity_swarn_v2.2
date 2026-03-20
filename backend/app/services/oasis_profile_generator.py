@@ -670,7 +670,15 @@ class OasisProfileGenerator:
     
     def _get_system_prompt(self, is_individual: bool) -> str:
         """Get system prompt"""
-        base_prompt = "You are a social media user profile generation expert. Generate detailed, realistic personas for opinion simulation, faithfully reproducing known real-world circumstances. You must return valid JSON format, all string values must not contain unescaped newlines. Use Chinese."
+        base_prompt = (
+            "You are a social media user profile generation expert. "
+            "Generate detailed, realistic personas for opinion simulation, "
+            "faithfully reproducing known real-world circumstances. "
+            "You must return valid JSON format, all string values must not contain unescaped newlines.\n\n"
+            "IMPORTANT: You must respond in English only. "
+            "Do not use Chinese, Japanese, or any other language. "
+            "All entity names, descriptions, bios, and content must be in English."
+        )
         return base_prompt
     
     def _build_individual_persona_prompt(

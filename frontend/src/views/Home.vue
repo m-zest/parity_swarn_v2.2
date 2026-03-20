@@ -124,7 +124,7 @@
             <!-- Upload area -->
             <div class="console-section">
               <div class="console-header">
-                <span class="console-label">01 / Reality Seeds</span>
+                <span class="console-label">01 / Scenario Context</span>
                 <span class="console-meta">Supported formats: PDF, MD, TXT</span>
               </div>
               
@@ -164,23 +164,44 @@
 
             <!-- Divider -->
             <div class="console-divider">
-              <span>Input Parameters</span>
+              <span>Agents: 5 | Rounds: 5 | Platform: Twitter+Reddit</span>
+            </div>
+
+            <!-- Scenario Selector -->
+            <div class="console-section">
+              <div class="console-header">
+                <span class="console-label">>_ 02 / Attack Scenario</span>
+                <span class="console-meta" v-if="selectedScenario">{{ selectedScenario.category }} | {{ selectedScenario.difficulty }}</span>
+              </div>
+              <div class="scenario-selector">
+                <select
+                  v-model="selectedScenarioId"
+                  class="scenario-select"
+                  @change="onScenarioSelect"
+                  :disabled="loading"
+                >
+                  <option value="">-- Select a preset attack scenario --</option>
+                  <option v-for="s in attackScenarios" :key="s.id" :value="s.id">
+                    {{ s.name }}
+                  </option>
+                </select>
+              </div>
             </div>
 
             <!-- Input area -->
             <div class="console-section">
               <div class="console-header">
-                <span class="console-label">>_ 02 / Simulation Prompt</span>
+                <span class="console-label">>_ 03 / Simulation Prompt</span>
               </div>
               <div class="input-wrapper">
                 <textarea
                   v-model="formData.simulationRequirement"
                   class="code-input"
-                  placeholder="// Enter simulation or prediction requirements in natural language (e.g., What public opinion trends would emerge if...)"
+                  placeholder="// Select a scenario above or enter custom simulation requirements..."
                   rows="6"
                   :disabled="loading"
                 ></textarea>
-                <div class="model-badge">Engine: Swarm-Engine-V1.0</div>
+                <div class="model-badge">Engine: Parity Engine v1.0</div>
               </div>
             </div>
 
@@ -212,6 +233,32 @@ import { useRouter } from 'vue-router'
 import HistoryDatabase from '../components/HistoryDatabase.vue'
 
 const router = useRouter()
+
+// Attack scenarios for preset selector
+const attackScenarios = [
+  { id: 'direct_attacker', name: 'Direct Attacker', category: 'direct', difficulty: 'Easy' },
+  { id: 'data_poisoner', name: 'Data Poisoner', category: 'subtle', difficulty: 'Medium' },
+  { id: 'prompt_injector', name: 'Prompt Injector', category: 'direct', difficulty: 'Medium' },
+  { id: 'incremental_thief', name: 'Incremental Thief', category: 'subtle', difficulty: 'Hard' },
+  { id: 'social_engineer', name: 'Social Engineer', category: 'social', difficulty: 'Hard' },
+  { id: 'colluding_pair', name: 'Colluding Pair', category: 'social', difficulty: 'Hard' },
+  { id: 'model_manipulator', name: 'Model Manipulator', category: 'subtle', difficulty: 'Hard' },
+  { id: 'resource_hijacker', name: 'Resource Hijacker', category: 'direct', difficulty: 'Medium' },
+  { id: 'steganographic_agent', name: 'Steganographic Agent', category: 'steganographic', difficulty: 'Expert' },
+  { id: 'supply_chain_attacker', name: 'Supply Chain Attacker', category: 'steganographic', difficulty: 'Expert' },
+]
+
+const selectedScenarioId = ref('')
+const selectedScenario = computed(() => {
+  return attackScenarios.find(s => s.id === selectedScenarioId.value) || null
+})
+
+const onScenarioSelect = () => {
+  const scenario = selectedScenario.value
+  if (scenario) {
+    formData.value.simulationRequirement = `Run the "${scenario.name}" attack scenario.\n\nCategory: ${scenario.category}\nDifficulty: ${scenario.difficulty}\nScenario ID: ${scenario.id}`
+  }
+}
 
 // Form data
 const formData = ref({
@@ -786,6 +833,35 @@ const startSimulation = () => {
   font-size: 0.7rem;
   color: #BBB;
   letter-spacing: 1px;
+}
+
+.scenario-selector {
+  margin-bottom: 10px;
+}
+
+.scenario-select {
+  width: 100%;
+  padding: 12px 15px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  border: 1px solid #DDD;
+  background: #FAFAFA;
+  color: var(--black);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+}
+
+.scenario-select:hover {
+  border-color: #999;
+}
+
+.scenario-select:focus {
+  border-color: var(--orange);
 }
 
 .input-wrapper {

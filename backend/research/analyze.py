@@ -41,8 +41,8 @@ def load_data(results_dir: Path):
 
 def compute_statistics(raw: dict, monitor: dict) -> dict:
     """Compute all paper-ready statistics."""
-    evaluations = monitor.get("evaluations", [])
-    raw_results = raw.get("results", [])
+    evaluations = monitor if isinstance(monitor, list) else monitor.get("evaluations", [])
+    raw_results = raw if isinstance(raw, list) else raw.get("results", [])
 
     total = len(evaluations)
     if total == 0:

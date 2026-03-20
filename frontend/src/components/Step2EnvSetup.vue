@@ -521,7 +521,7 @@
               :disabled="phase < 4"
               @click="handleStartSimulation"
             >
-              Start Dual-World Parallel Simulation ➝
+              Start Multi-Agent Attack Simulation ➝
             </button>
           </div>
         </div>

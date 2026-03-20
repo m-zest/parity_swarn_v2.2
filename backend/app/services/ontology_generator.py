@@ -4,6 +4,7 @@ Interface 1: Analyze text content and generate entity and relationship type defi
 """
 
 import json
+import re
 from typing import Dict, Any, List, Optional
 from ..utils.llm_client import LLMClient
 
@@ -254,6 +255,52 @@ Based on the above content, design entity types and relationship types suitable 
         
         return message
     
+    @staticmethod
+    def _to_pascal_case(name: str) -> str:
+        """Convert a name to PascalCase format.
+
+        Removes spaces and special characters, capitalizes the first letter
+        of each word, and joins without separators.
+
+        Examples:
+            "api key"     -> "ApiKey"
+            "code change" -> "CodeChange"
+            "bug report"  -> "BugReport"
+            "WORKS_FOR"   -> "WorksFor"
+            "Person"      -> "Person"  (already valid)
+        """
+        words = re.split(r'[^a-zA-Z0-9]+', name)
+        return ''.join(word.capitalize() for word in words if word)
+
+    def _normalize_ontology_names(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        """Normalize all entity type and edge type names to PascalCase.
+
+        Also updates edge source/target references so they stay consistent
+        with the renamed entity types.
+        """
+        # Build entity name mapping: old_name -> PascalCase name
+        entity_name_map: Dict[str, str] = {}
+        for entity in result.get("entity_types", []):
+            old_name = entity.get("name", "")
+            new_name = self._to_pascal_case(old_name)
+            if new_name:
+                entity_name_map[old_name] = new_name
+                entity["name"] = new_name
+
+        # Normalize edge names and update source/target references
+        for edge in result.get("edge_types", []):
+            old_name = edge.get("name", "")
+            new_name = self._to_pascal_case(old_name)
+            if new_name:
+                edge["name"] = new_name
+            for st in edge.get("source_targets", []):
+                src = st.get("source", "")
+                tgt = st.get("target", "")
+                st["source"] = entity_name_map.get(src, self._to_pascal_case(src))
+                st["target"] = entity_name_map.get(tgt, self._to_pascal_case(tgt))
+
+        return result
+
     def _validate_and_process(self, result: Dict[str, Any]) -> Dict[str, Any]:
         """Validate and post-process results"""
 
@@ -264,7 +311,10 @@ Based on the above content, design entity types and relationship types suitable 
             result["edge_types"] = []
         if "analysis_summary" not in result:
             result["analysis_summary"] = ""
-        
+
+        # Normalize all type names to PascalCase before further validation
+        result = self._normalize_ontology_names(result)
+
         # Validate entity types
         for entity in result["entity_types"]:
             if "attributes" not in entity:
@@ -274,7 +324,7 @@ Based on the above content, design entity types and relationship types suitable 
             # Ensure description does not exceed 100 characters
             if len(entity.get("description", "")) > 100:
                 entity["description"] = entity["description"][:97] + "..."
-        
+
         # Validate relationship types
         for edge in result["edge_types"]:
             if "source_targets" not in edge:

@@ -121,8 +121,9 @@ def poll_prepare(task_id: str, timeout: int = 600) -> dict:
 
 
 def poll_simulation(sim_id: str, timeout: int = 1800) -> dict:
-    """Poll simulation run status."""
+    """Poll simulation run status, send close-env when rounds are done."""
     deadline = time.monotonic() + timeout
+    close_sent = False
     while time.monotonic() < deadline:
         r = requests.get(
             f"{SWARM_ENGINE_URL}/api/simulation/{sim_id}/run-status",
@@ -135,8 +136,46 @@ def poll_simulation(sim_id: str, timeout: int = 1800) -> dict:
             return data
         if runner == "failed":
             raise RuntimeError("Simulation run failed")
+        if not close_sent:
+            try:
+                env_r = requests.post(
+                    f"{SWARM_ENGINE_URL}/api/simulation/env-status",
+                    json={"simulation_id": sim_id},
+                    timeout=10,
+                )
+                env_data = env_r.json().get("data", {})
+                if env_data.get("env_alive"):
+                    log.info("  Rounds complete, sending close-env...")
+                    requests.post(
+                        f"{SWARM_ENGINE_URL}/api/simulation/close-env",
+                        json={"simulation_id": sim_id, "timeout": 30},
+                        timeout=60,
+                    )
+                    close_sent = True
+            except Exception:
+                pass
         time.sleep(5)
     raise TimeoutError(f"Simulation {sim_id} timed out after {timeout}s")
+
+
+def poll_report_task(sim_id: str, task_id: str, report_id: str, timeout: int = 600) -> None:
+    """Poll report generation task until completed."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        r = requests.post(
+            f"{SWARM_ENGINE_URL}/api/report/generate/status",
+            json={"task_id": task_id, "simulation_id": sim_id},
+            timeout=30,
+        )
+        r.raise_for_status()
+        data = r.json()["data"]
+        status = data.get("status", "")
+        if status == "completed":
+            return
+        if status == "failed":
+            raise RuntimeError(f"Report generation failed: {data.get('message')}")
+        time.sleep(5)
+    raise TimeoutError(f"Report task timed out after {timeout}s")
 
 
 def poll_report(report_id: str, timeout: int = 300) -> dict:
@@ -276,8 +315,12 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
             timeout=30,
         )
         r.raise_for_status()
-        report_id = r.json()["data"]["report_id"]
-        report_data = poll_report(report_id)
+        resp_data = r.json()["data"]
+        report_id = resp_data["report_id"]
+        task_id = resp_data.get("task_id")
+        # Poll generate/status until completed, then fetch report
+        poll_report_task(sim_id, task_id, report_id)
+        report_data = requests.get(f"{SWARM_ENGINE_URL}/api/report/{report_id}", timeout=30).json()["data"]
         result["report_markdown"] = report_data.get("markdown_content", "")
         log.info(f"  Report OK — {len(result['report_markdown'])} chars")
 

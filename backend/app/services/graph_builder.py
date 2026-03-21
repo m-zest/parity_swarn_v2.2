@@ -274,11 +274,15 @@ class GraphBuilderService:
             # Build source_targets
             source_targets = []
             for st in edge_def.get("source_targets", []):
+                src = to_pascal_case(st.get("source", "Entity"))
+                tgt = to_pascal_case(st.get("target", "Entity"))
+                # Fallback to Entity if name not in entity_types
+                if src not in entity_types:
+                    src = "Entity"
+                if tgt not in entity_types:
+                    tgt = "Entity"
                 source_targets.append(
-                    EntityEdgeSourceTarget(
-                        source=to_pascal_case(st.get("source", "Entity")),
-                        target=to_pascal_case(st.get("target", "Entity"))
-                    )
+                    EntityEdgeSourceTarget(source=src, target=tgt)
                 )
             
             if source_targets:

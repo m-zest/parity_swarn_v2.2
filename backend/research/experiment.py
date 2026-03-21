@@ -100,7 +100,7 @@ def poll_task(task_id: str, timeout: int = 300) -> dict:
     raise TimeoutError(f"Task {task_id} timed out after {timeout}s")
 
 
-def poll_prepare(task_id: str, timeout: int = 300) -> dict:
+def poll_prepare(task_id: str, timeout: int = 600) -> dict:
     """Poll simulation prepare status."""
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
@@ -198,7 +198,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
                 "simulation_requirement": SIMULATION_REQUIREMENT,
                 "project_name": f"RedTeam: {scenario['name']} (R{round_num})",
             },
-            timeout=120,
+            timeout=300,
         )
         r.raise_for_status()
         body = r.json()
@@ -259,7 +259,7 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
             json={
                 "simulation_id": sim_id,
                 "platform": "twitter",
-                "max_rounds": 5,
+                "max_rounds": 10,
                 "enable_graph_memory_update": False,
             },
             timeout=30,
@@ -288,8 +288,9 @@ def run_single_simulation(scenario: dict, round_num: int) -> dict:
     except Exception as e:
         result["error"] = str(e)
         log.error(f"  FAILED: {scenario_id} round {round_num} — {e}")
-
-    finally:
+        if project_id:
+            cleanup_project(project_id)
+    else:
         if project_id:
             cleanup_project(project_id)
 

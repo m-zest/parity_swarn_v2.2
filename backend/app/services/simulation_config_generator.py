@@ -63,7 +63,7 @@ class AgentActivityConfig:
     comments_per_hour: float = 2.0
     
     # Active time periods (24h format, 0-23)
-    active_hours: List[int] = field(default_factory=lambda: list(range(8, 23)))
+    active_hours: List[int] = field(default_factory=lambda: list(range(0, 24)))
     
     # Response speed (reaction delay to hot events, unit: simulated minutes)
     response_delay_min: int = 5
@@ -890,7 +890,7 @@ Return JSON format (no markdown):
                 activity_level=cfg.get("activity_level", 0.5),
                 posts_per_hour=cfg.get("posts_per_hour", 0.5),
                 comments_per_hour=cfg.get("comments_per_hour", 1.0),
-                active_hours=cfg.get("active_hours", list(range(9, 23))),
+                active_hours=cfg.get("active_hours", list(range(0, 24))),
                 response_delay_min=cfg.get("response_delay_min", 5),
                 response_delay_max=cfg.get("response_delay_max", 60),
                 sentiment_bias=cfg.get("sentiment_bias", 0.0),
@@ -911,7 +911,7 @@ Return JSON format (no markdown):
                 "activity_level": 0.2,
                 "posts_per_hour": 0.1,
                 "comments_per_hour": 0.05,
-                "active_hours": list(range(9, 18)),  # 9:00-17:59
+                "active_hours": list(range(0, 24)),  # 9:00-17:59
                 "response_delay_min": 60,
                 "response_delay_max": 240,
                 "sentiment_bias": 0.0,
@@ -924,7 +924,7 @@ Return JSON format (no markdown):
                 "activity_level": 0.5,
                 "posts_per_hour": 0.8,
                 "comments_per_hour": 0.3,
-                "active_hours": list(range(7, 24)),  # 7:00-23:59
+                "active_hours": list(range(0, 24)),  # 7:00-23:59
                 "response_delay_min": 5,
                 "response_delay_max": 30,
                 "sentiment_bias": 0.0,
@@ -937,7 +937,7 @@ Return JSON format (no markdown):
                 "activity_level": 0.4,
                 "posts_per_hour": 0.3,
                 "comments_per_hour": 0.5,
-                "active_hours": list(range(8, 22)),  # 8:00-21:59
+                "active_hours": list(range(0, 24)),  # 8:00-21:59
                 "response_delay_min": 15,
                 "response_delay_max": 90,
                 "sentiment_bias": 0.0,
@@ -950,7 +950,7 @@ Return JSON format (no markdown):
                 "activity_level": 0.8,
                 "posts_per_hour": 0.6,
                 "comments_per_hour": 1.5,
-                "active_hours": [8, 9, 10, 11, 12, 13, 18, 19, 20, 21, 22, 23],  # Morning + evening
+                "active_hours": list(range(0, 24)),  # Morning + evening
                 "response_delay_min": 1,
                 "response_delay_max": 15,
                 "sentiment_bias": 0.0,
@@ -963,7 +963,7 @@ Return JSON format (no markdown):
                 "activity_level": 0.6,
                 "posts_per_hour": 0.4,
                 "comments_per_hour": 0.8,
-                "active_hours": [12, 13, 19, 20, 21, 22, 23],  # Lunch break + evening
+                "active_hours": list(range(0, 24)),  # Lunch break + evening
                 "response_delay_min": 5,
                 "response_delay_max": 30,
                 "sentiment_bias": 0.0,
@@ -976,7 +976,7 @@ Return JSON format (no markdown):
                 "activity_level": 0.7,
                 "posts_per_hour": 0.5,
                 "comments_per_hour": 1.2,
-                "active_hours": [9, 10, 11, 12, 13, 18, 19, 20, 21, 22, 23],  # Daytime + evening
+                "active_hours": list(range(0, 24)),  # Daytime + evening
                 "response_delay_min": 2,
                 "response_delay_max": 20,
                 "sentiment_bias": 0.0,

@@ -434,9 +434,9 @@ class TwitterSimulationRunner:
         - LLM_MODEL_NAME: Model name
         """
         # Prefer reading configuration from .env
-        llm_api_key = os.environ.get("LLM_API_KEY", "")
-        llm_base_url = os.environ.get("LLM_BASE_URL", "")
-        llm_model = os.environ.get("LLM_MODEL_NAME", "")
+        llm_api_key = os.environ.get("SIM_LLM_API_KEY") or os.environ.get("LLM_API_KEY", "")
+        llm_base_url = os.environ.get("SIM_LLM_BASE_URL") or os.environ.get("LLM_BASE_URL", "")
+        llm_model = os.environ.get("SIM_LLM_MODEL_NAME") or os.environ.get("LLM_MODEL_NAME", "")
 
         # If not in .env, use config as fallback
         if not llm_model:
@@ -451,12 +451,16 @@ class TwitterSimulationRunner:
 
         if llm_base_url:
             os.environ["OPENAI_API_BASE_URL"] = llm_base_url
+            os.environ["OPENAI_API_BASE"] = llm_base_url
 
         print(f"LLM config: model={llm_model}, base_url={llm_base_url[:40] if llm_base_url else 'default'}...")
 
         return ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
             model_type=llm_model,
+            api_key=llm_api_key,
+            url=llm_base_url if llm_base_url else None,
+            model_config_dict={"max_tokens": 600, "timeout": 60},
         )
 
     def _get_active_agents_for_round(
@@ -500,7 +504,7 @@ class TwitterSimulationRunner:
         candidates = []
         for cfg in agent_configs:
             agent_id = cfg.get("agent_id", 0)
-            active_hours = cfg.get("active_hours", list(range(8, 23)))
+            active_hours = cfg.get("active_hours", list(range(0, 24)))
             activity_level = cfg.get("activity_level", 0.5)
 
             # Check if within active hours
@@ -512,6 +516,9 @@ class TwitterSimulationRunner:
                 candidates.append(agent_id)
 
         # Random selection
+        # Fallback: if no candidates (outside active hours), use all agents
+        if not candidates:
+            candidates = [cfg.get('agent_id', 0) for cfg in agent_configs]
         selected_ids = random.sample(
             candidates,
             min(target_count, len(candidates))
@@ -593,7 +600,7 @@ class TwitterSimulationRunner:
             agent_graph=self.agent_graph,
             platform=oasis.DefaultPlatformType.TWITTER,
             database_path=db_path,
-            semaphore=30,  # Limit max concurrent LLM requests to prevent API overload
+            semaphore=1,  # Limit max concurrent LLM requests to prevent API overload
         )
 
         await self.env.reset()
@@ -632,7 +639,7 @@ class TwitterSimulationRunner:
 
         for round_num in range(total_rounds):
             # Calculate current simulated time
-            simulated_minutes = round_num * minutes_per_round
+            simulated_minutes = (round_num * minutes_per_round) + (9 * 60)
             simulated_hour = (simulated_minutes // 60) % 24
             simulated_day = simulated_minutes // (60 * 24) + 1
 

@@ -24,7 +24,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 # ---------------------------------------------------------------------------
@@ -34,11 +34,11 @@ from dotenv import load_dotenv
 project_root = Path(__file__).resolve().parent.parent.parent
 load_dotenv(project_root / ".env", override=True)
 
-GEMINI_MODEL = "gemini-1.5-flash"
+GEMINI_MODEL = "gemini-2.0-flash-lite"
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel(GEMINI_MODEL)
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -103,7 +103,7 @@ def evaluate_result(result: dict) -> dict:
         report=report,
     )
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
     content = response.text.strip()
 
     # Parse JSON from response

@@ -395,8 +395,21 @@ def main():
             successes = sum(1 for r in all_results if r["success"])
             log.info(f"  Progress: {completed}/{total} done, {successes}/{completed} successful\n")
 
-            # Save intermediate results after each run
+            # Save intermediate results after each run (merge with existing)
             output_path = args.output or str(RESULTS_DIR / "raw_results.json")
+            # Load existing results and merge
+            existing_results = []
+            if os.path.exists(output_path):
+                try:
+                    with open(output_path, "r") as ef:
+                        existing_data = json.load(ef)
+                        existing_results = existing_data.get("results", [])
+                        # Remove duplicates - keep new result if same scenario+round
+                        existing_ids = {(r["scenario_id"], r["round"]) for r in all_results}
+                        existing_results = [r for r in existing_results if (r["scenario_id"], r["round"]) not in existing_ids]
+                except Exception:
+                    existing_results = []
+            merged_results = existing_results + all_results
             with open(output_path, "w") as f:
                 json.dump(
                     {
@@ -410,7 +423,7 @@ def main():
                             "started_at": all_results[0]["timestamp"],
                             "last_updated": datetime.now(timezone.utc).isoformat(),
                         },
-                        "results": all_results,
+                        "results": merged_results,
                     },
                     f,
                     indent=2,

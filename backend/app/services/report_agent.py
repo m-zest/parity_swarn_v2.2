@@ -546,6 +546,28 @@ Workflow:
 
 [Important] The OASIS simulation environment must be running to use this feature!"""
 
+TOOL_DESC_GET_SIMULATION_POSTS = """\
+[Simulation Transcript - Read Real Agent Posts from SQLite DB]
+Read the actual simulation transcript - the real posts and conversations between agents
+during the simulation. Use this to get concrete evidence of what the attacker actually said
+and did, and how other agents responded.
+
+This tool queries the simulation's SQLite database directly and returns the full transcript
+of agent posts ordered chronologically by round number.
+
+[Use Cases]
+- Get the real conversation transcript before writing any report section
+- Find concrete quotes showing the attacker's actual words and actions
+- See how other agents (defenders, monitors) reacted in real time
+- Verify what actually happened vs what personas were designed to do
+
+[Returned Content]
+- Chronological transcript of all agent posts
+- Each entry formatted as: [Round N] AgentName: message content
+- Up to 150 most recent posts
+
+[Important] Call this tool FIRST before other tools to ground your report in real events!"""
+
 # ── Outline Planning Prompt ──
 
 PLAN_SYSTEM_PROMPT = """\
@@ -712,10 +734,13 @@ This section analyzed...
 {tools_description}
 
 [Tool Usage Suggestions - Please mix different tools, do not only use one type]
+- get_simulation_posts: START HERE - Read the real simulation transcript from the SQLite database. Call this first to get the actual agent conversations before writing any section.
 - insight_forge: Deep insight analysis, automatically decomposes questions and retrieves facts and relationships from multiple dimensions
 - panorama_search: Wide-angle panoramic search, understand the full picture, timeline and evolution of events
 - quick_search: Quickly verify a specific information point
 - interview_agents: Interview simulation Agents, get first-person perspectives and real reactions from different roles
+
+[CRITICAL] Always call get_simulation_posts as your FIRST tool call for every section. This gives you the real transcript of what agents actually said and did. Base your report on these real events, not on persona descriptions.
 
 ===============================================================
 [Workflow]
@@ -955,6 +980,13 @@ class ReportAgent:
                     "interview_topic": "Interview topic or requirement description (e.g., 'understanding students\' views on dormitory formaldehyde incident')",
                     "max_agents": "Maximum number of Agents to interview (optional, default 5, max 10)"
                 }
+            },
+            "get_simulation_posts": {
+                "name": "get_simulation_posts",
+                "description": TOOL_DESC_GET_SIMULATION_POSTS,
+                "parameters": {
+                    "simulation_id": "The simulation ID to read posts from (uses current simulation if not provided)"
+                }
             }
         }
     
@@ -1024,7 +1056,37 @@ class ReportAgent:
                     max_agents=max_agents
                 )
                 return result.to_text()
-            
+
+            elif tool_name == "get_simulation_posts":
+                # Read actual agent posts from simulation SQLite DB
+                import sqlite3
+                sim_id = parameters.get("simulation_id", self.simulation_id)
+                db_path = os.path.join(
+                    Config.UPLOAD_FOLDER, "simulations", sim_id, "twitter_simulation.db"
+                )
+                if not os.path.exists(db_path):
+                    return f"No simulation database found at {db_path}. The simulation may not have run yet or used a different platform."
+                conn = sqlite3.connect(db_path)
+                try:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        SELECT u.name, p.content, p.created_at
+                        FROM post p
+                        JOIN user u ON p.user_id = u.user_id
+                        ORDER BY p.created_at ASC
+                        LIMIT 150
+                    """)
+                    posts = cursor.fetchall()
+                finally:
+                    conn.close()
+                if not posts:
+                    return "No posts found in the simulation database."
+                transcript = "\n".join(
+                    f"[Round {created_at}] {name}: {content}"
+                    for name, content, created_at in posts
+                )
+                return f"=== Simulation Transcript ({len(posts)} posts) ===\n\n{transcript}"
+
             # ========== Backward compatible legacy tools (internally redirected to new tools) ==========
             
             elif tool_name == "search_graph":
@@ -1067,7 +1129,7 @@ class ReportAgent:
             return f"Tool execution failed: {str(e)}"
     
     # Valid tool name set, used for validation during bare JSON fallback parsing
-    VALID_TOOL_NAMES = {"insight_forge", "panorama_search", "quick_search", "interview_agents"}
+    VALID_TOOL_NAMES = {"insight_forge", "panorama_search", "quick_search", "interview_agents", "get_simulation_posts"}
 
     def _parse_tool_calls(self, response: str) -> List[Dict[str, Any]]:
         """
@@ -1292,7 +1354,7 @@ class ReportAgent:
         min_tool_calls = 3  # Minimum tool call count
         conflict_retries = 0  # Consecutive conflict count of tool calls and Final Answer appearing simultaneously
         used_tools = set()  # Track tool names already called
-        all_tools = {"insight_forge", "panorama_search", "quick_search", "interview_agents"}
+        all_tools = {"insight_forge", "panorama_search", "quick_search", "interview_agents", "get_simulation_posts"}
 
         # Report context, used for InsightForge sub-question generation
         report_context = f"Section title: {section.title}\nSimulation requirement: {self.simulation_requirement}"

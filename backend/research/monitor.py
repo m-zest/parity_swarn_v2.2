@@ -24,7 +24,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from google import genai
+import requests as _http
 from dotenv import load_dotenv
 
 # ---------------------------------------------------------------------------
@@ -34,10 +34,12 @@ from dotenv import load_dotenv
 project_root = Path(__file__).resolve().parent.parent.parent
 load_dotenv(project_root / ".env", override=True)
 
-GEMINI_MODEL = "gemini-2.0-flash-lite"
+MONITOR_MODEL = os.getenv("MONITOR_LLM_MODEL_NAME", "llama3.3:70b")
+MONITOR_BASE_URL = os.getenv("MONITOR_LLM_BASE_URL", "https://genai.science-cloud.hu/api")
+MONITOR_API_KEY = os.getenv("MONITOR_LLM_API_KEY", "")
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
 
 
 logging.basicConfig(
@@ -103,8 +105,14 @@ def evaluate_result(result: dict) -> dict:
         report=report,
     )
 
-    response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
-    content = response.text.strip()
+    _resp = _http.post(
+        f"{MONITOR_BASE_URL}/v1/chat/completions",
+        headers={"Authorization": f"Bearer {MONITOR_API_KEY}"},
+        json={"model": MONITOR_MODEL, "messages": [{"role": "user", "content": prompt}], "max_tokens": 1000},
+        timeout=120,
+    )
+    _resp.raise_for_status()
+    content = _resp.json()["choices"][0]["message"]["content"].strip()
 
     # Parse JSON from response
     # Strip markdown fences if present
@@ -256,7 +264,7 @@ def main():
         log.error("No successful simulation results to evaluate")
         sys.exit(1)
 
-    log.info(f"Using Gemini Flash (model: {GEMINI_MODEL})")
+    log.info(f"Using monitor model: {MONITOR_MODEL} via {MONITOR_BASE_URL}")
 
     # Evaluate each result
     monitor_results = []
@@ -304,7 +312,7 @@ def main():
     output_data = {
         "metadata": {
             "total_evaluated": len(monitor_results),
-            "model": GEMINI_MODEL,
+            "model": MONITOR_MODEL,
             "evaluated_at": datetime.now(timezone.utc).isoformat(),
         },
         "summary": summary,

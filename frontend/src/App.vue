@@ -3,11 +3,11 @@
 </template>
 
 <script setup>
-// Using Vue Router for page management
 </script>
 
 <style>
-/* Global style reset */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -15,60 +15,79 @@
 }
 
 html, body {
-  background-color: #0a0a0a;
+  background-color: #080808;
 }
 
 #app {
-  font-family: 'JetBrains Mono', 'Space Grotesk', 'Noto Sans SC', monospace;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #ffffff;
-  background-color: #0a0a0a;
+  color: #e0e0e0;
+  background-color: #080808;
   min-height: 100vh;
 }
 
-/* Scrollbar styles */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111111;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
-  border-radius: 3px;
+  background: #2a2a2a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+  background: #3a3a3a;
 }
 
-/* Global button styles */
 button {
-  font-family: inherit;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
-/* Global dark theme variables */
+input, textarea, select {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+}
+
 :root {
-  --bg-primary: #0a0a0a;
-  --bg-card: #111111;
-  --bg-elevated: #161616;
-  --border-color: #222222;
-  --border-hover: #333333;
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --accent-dim: rgba(59, 130, 246, 0.1);
+  --bg-base: #080808;
+  --bg-card: #0f0f0f;
+  --bg-elevated: #141414;
+  --bg-input: #0a0a0a;
+  --border: #1a1a1a;
+  --border-hover: #2a2a2a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #888888;
+  --text-muted: #555555;
+  --red: #ef4444;
+  --red-dim: rgba(239, 68, 68, 0.1);
+  --red-border: rgba(239, 68, 68, 0.25);
+  --orange: #f97316;
+  --orange-dim: rgba(249, 115, 22, 0.1);
+  --orange-border: rgba(249, 115, 22, 0.25);
+  --green: #22c55e;
+  --green-dim: rgba(34, 197, 94, 0.1);
+  --green-border: rgba(34, 197, 94, 0.25);
+  --terminal-green: #4ade80;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Backward-compat aliases for existing components */
+  --bg-primary: #080808;
+  --border-color: #1a1a1a;
+  --accent: #ef4444;
+  --accent-hover: #dc2626;
+  --accent-dim: rgba(239, 68, 68, 0.1);
   --danger: #ef4444;
   --success: #22c55e;
-  --warning: #f59e0b;
-  --terminal-green: #4ade80;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  --warning: #f97316;
+  --font-sans: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 </style>

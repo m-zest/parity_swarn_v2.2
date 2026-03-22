@@ -1,15 +1,16 @@
 <template>
   <div class="main-view">
-    <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">Parity Swarn</div>
+        <div class="brand" @click="router.push('/')">
+          <span class="brand-diamond">&loz;</span>
+          PARITY SWARM
+        </div>
       </div>
-      
       <div class="header-center">
         <div class="view-switcher">
-          <button 
-            v-for="mode in ['graph', 'split', 'workbench']" 
+          <button
+            v-for="mode in ['graph', 'split', 'workbench']"
             :key="mode"
             class="switch-btn"
             :class="{ active: viewMode === mode }"
@@ -19,13 +20,11 @@
           </button>
         </div>
       </div>
-
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step 2/5</span>
           <span class="step-name">Environment Setup</span>
         </div>
-        <div class="step-divider"></div>
         <span class="status-indicator" :class="statusClass">
           <span class="dot"></span>
           {{ statusText }}
@@ -33,11 +32,9 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="content-area">
-      <!-- Left Panel: Graph -->
       <div class="panel-wrapper left" :style="leftPanelStyle">
-        <GraphPanel 
+        <GraphPanel
           :graphData="graphData"
           :loading="graphLoading"
           :currentPhase="2"
@@ -45,8 +42,6 @@
           @toggle-maximize="toggleMaximize('graph')"
         />
       </div>
-
-      <!-- Right Panel: Step2 Environment Setup -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <Step2EnvSetup
           :simulationId="currentSimulationId"
@@ -64,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import GraphPanel from '../components/GraphPanel.vue'
 import Step2EnvSetup from '../components/Step2EnvSetup.vue'
@@ -74,23 +69,16 @@ import { getSimulation, stopSimulation, getEnvStatus, closeSimulationEnv } from 
 const route = useRoute()
 const router = useRouter()
 
-// Props
-const props = defineProps({
-  simulationId: String
-})
+const props = defineProps({ simulationId: String })
 
-// Layout State
 const viewMode = ref('split')
-
-// Data State
 const currentSimulationId = ref(route.params.simulationId)
 const projectData = ref(null)
 const graphData = ref(null)
 const graphLoading = ref(false)
 const systemLogs = ref([])
-const currentStatus = ref('processing') // processing | completed | error
+const currentStatus = ref('processing')
 
-// --- Computed Layout Styles ---
 const leftPanelStyle = computed(() => {
   if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
   if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
@@ -103,196 +91,96 @@ const rightPanelStyle = computed(() => {
   return { width: '50%', opacity: 1, transform: 'translateX(0)' }
 })
 
-// --- Status Computed ---
-const statusClass = computed(() => {
-  return currentStatus.value
-})
-
+const statusClass = computed(() => currentStatus.value)
 const statusText = computed(() => {
   if (currentStatus.value === 'error') return 'Error'
   if (currentStatus.value === 'completed') return 'Ready'
   return 'Preparing'
 })
 
-// --- Helpers ---
 const addLog = (msg) => {
   const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
-  if (systemLogs.value.length > 100) {
-    systemLogs.value.shift()
-  }
+  if (systemLogs.value.length > 100) systemLogs.value.shift()
 }
 
-const updateStatus = (status) => {
-  currentStatus.value = status
-}
-
-// --- Layout Methods ---
-const toggleMaximize = (target) => {
-  if (viewMode.value === target) {
-    viewMode.value = 'split'
-  } else {
-    viewMode.value = target
-  }
-}
+const updateStatus = (status) => { currentStatus.value = status }
+const toggleMaximize = (target) => { viewMode.value = viewMode.value === target ? 'split' : target }
 
 const handleGoBack = () => {
-  // Navigate back to process page
-  if (projectData.value?.project_id) {
-    router.push({ name: 'Process', params: { projectId: projectData.value.project_id } })
-  } else {
-    router.push('/')
-  }
+  if (projectData.value?.project_id) router.push({ name: 'Process', params: { projectId: projectData.value.project_id } })
+  else router.push('/')
 }
 
 const handleNextStep = (params = {}) => {
   addLog('Entering Step 3: Run Simulation')
-
-  // Log simulation rounds config
-  if (params.maxRounds) {
-    addLog(`Custom simulation rounds: ${params.maxRounds}`)
-  } else {
-    addLog('Using auto-configured simulation rounds')
-  }
-
-  // Build route params
-  const routeParams = {
-    name: 'SimulationRun',
-    params: { simulationId: currentSimulationId.value }
-  }
-
-  // If custom rounds specified, pass via query params
-  if (params.maxRounds) {
-    routeParams.query = { maxRounds: params.maxRounds }
-  }
-
-  // Navigate to Step 3 page
+  if (params.maxRounds) addLog(`Custom simulation rounds: ${params.maxRounds}`)
+  else addLog('Using auto-configured simulation rounds')
+  const routeParams = { name: 'SimulationRun', params: { simulationId: currentSimulationId.value } }
+  if (params.maxRounds) routeParams.query = { maxRounds: params.maxRounds }
   router.push(routeParams)
 }
 
-// --- Data Logic ---
-
-/**
- * Check and stop running simulation
- * When user returns from Step 3 to Step 2, assume user wants to exit simulation
- */
 const checkAndStopRunningSimulation = async () => {
   if (!currentSimulationId.value) return
-  
   try {
-    // Check if simulation environment is alive
     const envStatusRes = await getEnvStatus({ simulation_id: currentSimulationId.value })
-
     if (envStatusRes.success && envStatusRes.data?.env_alive) {
       addLog('Detected running simulation environment, shutting down...')
-
-      // Try graceful shutdown of simulation environment
       try {
-        const closeRes = await closeSimulationEnv({
-          simulation_id: currentSimulationId.value,
-          timeout: 10  // 10s timeout
-        })
-
-        if (closeRes.success) {
-          addLog('✓ Simulation environment closed')
-        } else {
-          addLog(`Failed to close simulation environment: ${closeRes.error || 'Unknown error'}`)
-          // If graceful shutdown fails, try force stop
-          await forceStopSimulation()
-        }
-      } catch (closeErr) {
-        addLog(`Simulation environment close error: ${closeErr.message}`)
-        // If graceful shutdown throws, try force stop
-        await forceStopSimulation()
-      }
+        const closeRes = await closeSimulationEnv({ simulation_id: currentSimulationId.value, timeout: 10 })
+        if (closeRes.success) addLog('Simulation environment closed')
+        else { addLog(`Failed to close: ${closeRes.error || 'Unknown'}`); await forceStopSimulation() }
+      } catch (closeErr) { addLog(`Close error: ${closeErr.message}`); await forceStopSimulation() }
     } else {
-      // Environment not running, but process may still exist, checking simulation status
       const simRes = await getSimulation(currentSimulationId.value)
       if (simRes.success && simRes.data?.status === 'running') {
         addLog('Detected simulation running, stopping...')
         await forceStopSimulation()
       }
     }
-  } catch (err) {
-    // Environment status check failure doesn't affect subsequent flow
-    console.warn('Failed to check simulation status:', err)
-  }
+  } catch (err) { console.warn('Failed to check simulation status:', err) }
 }
 
-/**
- * Force stop simulation
- */
 const forceStopSimulation = async () => {
   try {
     const stopRes = await stopSimulation({ simulation_id: currentSimulationId.value })
-    if (stopRes.success) {
-      addLog('✓ Simulation force stopped')
-    } else {
-      addLog(`Failed to force stop simulation: ${stopRes.error || 'Unknown error'}`)
-    }
-  } catch (err) {
-    addLog(`Force stop simulation error: ${err.message}`)
-  }
+    if (stopRes.success) addLog('Simulation force stopped')
+    else addLog(`Failed to force stop: ${stopRes.error || 'Unknown'}`)
+  } catch (err) { addLog(`Force stop error: ${err.message}`) }
 }
 
 const loadSimulationData = async () => {
   try {
     addLog(`Loading simulation data: ${currentSimulationId.value}`)
-
-    // Get simulation info
     const simRes = await getSimulation(currentSimulationId.value)
     if (simRes.success && simRes.data) {
-      const simData = simRes.data
-
-      // Get project info
-      if (simData.project_id) {
-        const projRes = await getProject(simData.project_id)
+      if (simRes.data.project_id) {
+        const projRes = await getProject(simRes.data.project_id)
         if (projRes.success && projRes.data) {
           projectData.value = projRes.data
-          addLog(`Project loaded successfully: ${projRes.data.project_id}`)
-
-          // Get graph data
-          if (projRes.data.graph_id) {
-            await loadGraph(projRes.data.graph_id)
-          }
+          addLog(`Project loaded: ${projRes.data.project_id}`)
+          if (projRes.data.graph_id) await loadGraph(projRes.data.graph_id)
         }
       }
-    } else {
-      addLog(`Failed to load simulation data: ${simRes.error || 'Unknown error'}`)
-    }
-  } catch (err) {
-    addLog(`Load error: ${err.message}`)
-  }
+    } else addLog(`Failed to load simulation: ${simRes.error || 'Unknown'}`)
+  } catch (err) { addLog(`Load error: ${err.message}`) }
 }
 
 const loadGraph = async (graphId) => {
   graphLoading.value = true
   try {
     const res = await getGraphData(graphId)
-    if (res.success) {
-      graphData.value = res.data
-      addLog('Graph data loaded successfully')
-    }
-  } catch (err) {
-    addLog(`Graph load failed: ${err.message}`)
-  } finally {
-    graphLoading.value = false
-  }
+    if (res.success) { graphData.value = res.data; addLog('Graph data loaded') }
+  } catch (err) { addLog(`Graph load failed: ${err.message}`) }
+  finally { graphLoading.value = false }
 }
 
-const refreshGraph = () => {
-  if (projectData.value?.graph_id) {
-    loadGraph(projectData.value.graph_id)
-  }
-}
+const refreshGraph = () => { if (projectData.value?.graph_id) loadGraph(projectData.value.graph_id) }
 
 onMounted(async () => {
   addLog('SimulationView initialized')
-
-  // Check and stop running simulation (when user returns from Step 3)
   await checkAndStopRunningSimulation()
-
-  // Load simulation data
   loadSimulationData()
 })
 </script>
@@ -302,30 +190,20 @@ onMounted(async () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: var(--bg-base);
   overflow: hidden;
-  font-family: var(--font-sans);
 }
 
-/* Header */
 .app-header {
-  height: 48px;
-  border-bottom: 1px solid var(--border-color);
+  height: 44px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: var(--bg-primary);
+  background: var(--bg-card);
   z-index: 100;
   position: relative;
-}
-
-.brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
-  cursor: pointer;
 }
 
 .header-center {
@@ -334,30 +212,42 @@ onMounted(async () => {
   transform: translateX(-50%);
 }
 
+.brand {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-diamond { color: var(--red); font-size: 14px; }
+
 .view-switcher {
   display: flex;
-  background: var(--bg-primary);
-  padding: 4px;
-  border-radius: 6px;
-  gap: 4px;
+  background: var(--bg-base);
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid var(--border);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 6px 16px;
-  font-size: 12px;
+  padding: 4px 14px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text-secondary);
-  border-radius: 4px;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
 }
 
 .switch-btn.active {
-  background: var(--bg-primary);
+  background: var(--bg-elevated);
   color: var(--text-primary);
-  box-shadow: none;
 }
 
 .header-right {
@@ -370,49 +260,27 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 11px;
 }
 
-.step-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.step-name {
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.step-divider {
-  width: 1px;
-  height: 14px;
-  background-color: var(--border-color);
-}
+.step-num { font-weight: 700; color: var(--text-muted); }
+.step-name { font-weight: 700; color: var(--text-primary); }
 
 .status-indicator {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 10px;
   color: var(--text-secondary);
-  font-weight: 500;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--border-hover);
-}
+.dot { width: 6px; height: 6px; background: var(--border-hover); }
+.status-indicator.processing .dot { background: var(--red); animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: var(--green); }
+.status-indicator.error .dot { background: var(--red); }
 
-.status-indicator.processing .dot { background: var(--accent); animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: var(--success); }
-.status-indicator.error .dot { background: var(--danger); }
+@keyframes pulse { 50% { opacity: 0.4; } }
 
-@keyframes pulse { 50% { opacity: 0.5; } }
-
-/* Content */
 .content-area {
   flex: 1;
   display: flex;
@@ -427,8 +295,5 @@ onMounted(async () => {
   will-change: width, opacity, transform;
 }
 
-.panel-wrapper.left {
-  border-right: 1px solid var(--border-color);
-}
+.panel-wrapper.left { border-right: 1px solid var(--border); }
 </style>
-

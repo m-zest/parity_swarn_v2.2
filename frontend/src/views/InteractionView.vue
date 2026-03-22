@@ -1,15 +1,16 @@
 <template>
   <div class="main-view">
-    <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">PARITY SWARM</div>
+        <div class="brand" @click="router.push('/')">
+          <span class="brand-diamond">&loz;</span>
+          PARITY SWARM
+        </div>
       </div>
-      
       <div class="header-center">
         <div class="view-switcher">
-          <button 
-            v-for="mode in ['graph', 'split', 'workbench']" 
+          <button
+            v-for="mode in ['graph', 'split', 'workbench']"
             :key="mode"
             class="switch-btn"
             :class="{ active: viewMode === mode }"
@@ -19,13 +20,11 @@
           </button>
         </div>
       </div>
-
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step 5/5</span>
           <span class="step-name">Deep Interaction</span>
         </div>
-        <div class="step-divider"></div>
         <span class="status-indicator" :class="statusClass">
           <span class="dot"></span>
           {{ statusText }}
@@ -33,11 +32,9 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="content-area">
-      <!-- Left Panel: Graph -->
       <div class="panel-wrapper left" :style="leftPanelStyle">
-        <GraphPanel 
+        <GraphPanel
           :graphData="graphData"
           :loading="graphLoading"
           :currentPhase="5"
@@ -46,8 +43,6 @@
           @toggle-maximize="toggleMaximize('graph')"
         />
       </div>
-
-      <!-- Right Panel: Step5 Deep Interaction -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <Step5Interaction
           :reportId="currentReportId"
@@ -72,25 +67,17 @@ import { getReport } from '../api/report'
 
 const route = useRoute()
 const router = useRouter()
+const props = defineProps({ reportId: String })
 
-// Props
-const props = defineProps({
-  reportId: String
-})
-
-// Layout State - default to workbench view
 const viewMode = ref('workbench')
-
-// Data State
 const currentReportId = ref(route.params.reportId)
 const simulationId = ref(null)
 const projectData = ref(null)
 const graphData = ref(null)
 const graphLoading = ref(false)
 const systemLogs = ref([])
-const currentStatus = ref('ready') // ready | processing | completed | error
+const currentStatus = ref('ready')
 
-// --- Computed Layout Styles ---
 const leftPanelStyle = computed(() => {
   if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
   if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
@@ -103,11 +90,7 @@ const rightPanelStyle = computed(() => {
   return { width: '50%', opacity: 1, transform: 'translateX(0)' }
 })
 
-// --- Status Computed ---
-const statusClass = computed(() => {
-  return currentStatus.value
-})
-
+const statusClass = computed(() => currentStatus.value)
 const statusText = computed(() => {
   if (currentStatus.value === 'error') return 'Error'
   if (currentStatus.value === 'completed') return 'Completed'
@@ -115,102 +98,52 @@ const statusText = computed(() => {
   return 'Ready'
 })
 
-// --- Helpers ---
 const addLog = (msg) => {
   const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
-  if (systemLogs.value.length > 200) {
-    systemLogs.value.shift()
-  }
+  if (systemLogs.value.length > 200) systemLogs.value.shift()
 }
 
-const updateStatus = (status) => {
-  currentStatus.value = status
-}
+const updateStatus = (status) => { currentStatus.value = status }
+const toggleMaximize = (target) => { viewMode.value = viewMode.value === target ? 'split' : target }
 
-// --- Layout Methods ---
-const toggleMaximize = (target) => {
-  if (viewMode.value === target) {
-    viewMode.value = 'split'
-  } else {
-    viewMode.value = target
-  }
-}
-
-// --- Data Logic ---
 const loadReportData = async () => {
   try {
     addLog(`Loading report data: ${currentReportId.value}`)
-    
-    // Get report info to obtain simulation_id
     const reportRes = await getReport(currentReportId.value)
     if (reportRes.success && reportRes.data) {
-      const reportData = reportRes.data
-      simulationId.value = reportData.simulation_id
-      
+      simulationId.value = reportRes.data.simulation_id
       if (simulationId.value) {
-        // Get simulation info
         const simRes = await getSimulation(simulationId.value)
-        if (simRes.success && simRes.data) {
-          const simData = simRes.data
-          
-          // Get project info
-          if (simData.project_id) {
-            const projRes = await getProject(simData.project_id)
-            if (projRes.success && projRes.data) {
-              projectData.value = projRes.data
-              addLog(`Project loaded: ${projRes.data.project_id}`)
-              
-              // Get graph data
-              if (projRes.data.graph_id) {
-                await loadGraph(projRes.data.graph_id)
-              }
-            }
+        if (simRes.success && simRes.data?.project_id) {
+          const projRes = await getProject(simRes.data.project_id)
+          if (projRes.success && projRes.data) {
+            projectData.value = projRes.data
+            addLog(`Project loaded: ${projRes.data.project_id}`)
+            if (projRes.data.graph_id) await loadGraph(projRes.data.graph_id)
           }
         }
       }
-    } else {
-      addLog(`Failed to get report info: ${reportRes.error || 'Unknown error'}`)
-    }
-  } catch (err) {
-    addLog(`Load error: ${err.message}`)
-  }
+    } else addLog(`Failed to get report: ${reportRes.error || 'Unknown'}`)
+  } catch (err) { addLog(`Load error: ${err.message}`) }
 }
 
 const loadGraph = async (graphId) => {
   graphLoading.value = true
-  
   try {
     const res = await getGraphData(graphId)
-    if (res.success) {
-      graphData.value = res.data
-      addLog('Graph data loaded')
-    }
-  } catch (err) {
-    addLog(`Graph load failed: ${err.message}`)
-  } finally {
-    graphLoading.value = false
-  }
+    if (res.success) { graphData.value = res.data; addLog('Graph data loaded') }
+  } catch (err) { addLog(`Graph load failed: ${err.message}`) }
+  finally { graphLoading.value = false }
 }
 
-const refreshGraph = () => {
-  if (projectData.value?.graph_id) {
-    loadGraph(projectData.value.graph_id)
-  }
-}
+const refreshGraph = () => { if (projectData.value?.graph_id) loadGraph(projectData.value.graph_id) }
 
-// Watch route params
 watch(() => route.params.reportId, (newId) => {
-  if (newId && newId !== currentReportId.value) {
-    currentReportId.value = newId
-    loadReportData()
-  }
+  if (newId && newId !== currentReportId.value) { currentReportId.value = newId; loadReportData() }
 }, { immediate: true })
 
-onMounted(() => {
-  addLog('InteractionView initialized')
-  loadReportData()
-})
+onMounted(() => { addLog('InteractionView initialized'); loadReportData() })
 </script>
 
 <style scoped>
@@ -218,124 +151,74 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: var(--bg-base);
   overflow: hidden;
-  font-family: var(--font-sans);
 }
 
-/* Header */
 .app-header {
-  height: 48px;
-  border-bottom: 1px solid var(--border-color);
+  height: 44px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: var(--bg-primary);
+  background: var(--bg-card);
   z-index: 100;
   position: relative;
 }
 
-.header-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
+.header-center { position: absolute; left: 50%; transform: translateX(-50%); }
 
 .brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
   cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.brand-diamond { color: var(--red); font-size: 14px; }
 
 .view-switcher {
   display: flex;
-  background: var(--bg-primary);
-  padding: 4px;
-  border-radius: 6px;
-  gap: 4px;
+  background: var(--bg-base);
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid var(--border);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 6px 16px;
-  font-size: 12px;
+  padding: 4px 14px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text-secondary);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.switch-btn.active {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  box-shadow: none;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.workflow-step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.step-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
   color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
 }
 
-.step-name {
-  font-weight: 700;
-  color: var(--text-primary);
-}
+.switch-btn.active { background: var(--bg-elevated); color: var(--text-primary); }
 
-.step-divider {
-  width: 1px;
-  height: 14px;
-  background-color: var(--border-color);
-}
+.header-right { display: flex; align-items: center; gap: 16px; }
+.workflow-step { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.step-num { font-weight: 700; color: var(--text-muted); }
+.step-name { font-weight: 700; color: var(--text-primary); }
 
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
+.status-indicator { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-secondary); }
+.dot { width: 6px; height: 6px; background: var(--border-hover); }
+.status-indicator.ready .dot { background: var(--green); }
+.status-indicator.processing .dot { background: var(--orange); animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: var(--green); }
+.status-indicator.error .dot { background: var(--red); }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--border-hover);
-}
+@keyframes pulse { 50% { opacity: 0.4; } }
 
-.status-indicator.ready .dot { background: var(--success); }
-.status-indicator.processing .dot { background: #FF9800; animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: var(--success); }
-.status-indicator.error .dot { background: var(--danger); }
-
-@keyframes pulse { 50% { opacity: 0.5; } }
-
-/* Content */
-.content-area {
-  flex: 1;
-  display: flex;
-  position: relative;
-  overflow: hidden;
-}
+.content-area { flex: 1; display: flex; position: relative; overflow: hidden; }
 
 .panel-wrapper {
   height: 100%;
@@ -344,7 +227,5 @@ onMounted(() => {
   will-change: width, opacity, transform;
 }
 
-.panel-wrapper.left {
-  border-right: 1px solid var(--border-color);
-}
+.panel-wrapper.left { border-right: 1px solid var(--border); }
 </style>

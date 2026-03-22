@@ -1,15 +1,16 @@
 <template>
   <div class="main-view">
-    <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">PARITY SWARM</div>
+        <div class="brand" @click="router.push('/')">
+          <span class="brand-diamond">&loz;</span>
+          PARITY SWARM
+        </div>
       </div>
-      
       <div class="header-center">
         <div class="view-switcher">
-          <button 
-            v-for="mode in ['graph', 'split', 'workbench']" 
+          <button
+            v-for="mode in ['graph', 'split', 'workbench']"
             :key="mode"
             class="switch-btn"
             :class="{ active: viewMode === mode }"
@@ -19,13 +20,11 @@
           </button>
         </div>
       </div>
-
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step 3/5</span>
           <span class="step-name">Run Simulation</span>
         </div>
-        <div class="step-divider"></div>
         <span class="status-indicator" :class="statusClass">
           <span class="dot"></span>
           {{ statusText }}
@@ -33,11 +32,9 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="content-area">
-      <!-- Left Panel: Graph -->
       <div class="panel-wrapper left" :style="leftPanelStyle">
-        <GraphPanel 
+        <GraphPanel
           :graphData="graphData"
           :loading="graphLoading"
           :currentPhase="3"
@@ -46,8 +43,6 @@
           @toggle-maximize="toggleMaximize('graph')"
         />
       </div>
-
-      <!-- Right Panel: Step3 Run Simulation -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <Step3Simulation
           :simulationId="currentSimulationId"
@@ -76,27 +71,18 @@ import { getSimulation, getSimulationConfig, stopSimulation, closeSimulationEnv,
 
 const route = useRoute()
 const router = useRouter()
+const props = defineProps({ simulationId: String })
 
-// Props
-const props = defineProps({
-  simulationId: String
-})
-
-// Layout State
 const viewMode = ref('split')
-
-// Data State
 const currentSimulationId = ref(route.params.simulationId)
-// Get maxRounds from query params at init time to ensure child components can access immediately
 const maxRounds = ref(route.query.maxRounds ? parseInt(route.query.maxRounds) : null)
-const minutesPerRound = ref(30) // Default 30 minutes per round
+const minutesPerRound = ref(30)
 const projectData = ref(null)
 const graphData = ref(null)
 const graphLoading = ref(false)
 const systemLogs = ref([])
-const currentStatus = ref('processing') // processing | completed | error
+const currentStatus = ref('processing')
 
-// --- Computed Layout Styles ---
 const leftPanelStyle = computed(() => {
   if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
   if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
@@ -109,205 +95,104 @@ const rightPanelStyle = computed(() => {
   return { width: '50%', opacity: 1, transform: 'translateX(0)' }
 })
 
-// --- Status Computed ---
-const statusClass = computed(() => {
-  return currentStatus.value
-})
-
+const statusClass = computed(() => currentStatus.value)
 const statusText = computed(() => {
   if (currentStatus.value === 'error') return 'Error'
   if (currentStatus.value === 'completed') return 'Completed'
   return 'Running'
 })
-
 const isSimulating = computed(() => currentStatus.value === 'processing')
 
-// --- Helpers ---
 const addLog = (msg) => {
   const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
-  if (systemLogs.value.length > 200) {
-    systemLogs.value.shift()
-  }
+  if (systemLogs.value.length > 200) systemLogs.value.shift()
 }
 
-const updateStatus = (status) => {
-  currentStatus.value = status
-}
-
-// --- Layout Methods ---
-const toggleMaximize = (target) => {
-  if (viewMode.value === target) {
-    viewMode.value = 'split'
-  } else {
-    viewMode.value = target
-  }
-}
+const updateStatus = (status) => { currentStatus.value = status }
+const toggleMaximize = (target) => { viewMode.value = viewMode.value === target ? 'split' : target }
 
 const handleGoBack = async () => {
-  // Before returning to Step 2, close the running simulation
   addLog('Preparing to return to Step 2, closing simulation...')
-
-  // Stop polling
   stopGraphRefresh()
-  
   try {
-    // Try graceful shutdown of simulation environment first
     const envStatusRes = await getEnvStatus({ simulation_id: currentSimulationId.value })
-    
     if (envStatusRes.success && envStatusRes.data?.env_alive) {
       addLog('Closing simulation environment...')
       try {
-        await closeSimulationEnv({ 
-          simulation_id: currentSimulationId.value,
-          timeout: 10
-        })
-        addLog('✓ Simulation environment closed')
+        await closeSimulationEnv({ simulation_id: currentSimulationId.value, timeout: 10 })
+        addLog('Simulation environment closed')
       } catch (closeErr) {
-        addLog(`Failed to close environment, trying force stop...`)
-        try {
-          await stopSimulation({ simulation_id: currentSimulationId.value })
-          addLog('✓ Simulation force stopped')
-        } catch (stopErr) {
-          addLog(`Force stop failed: ${stopErr.message}`)
-        }
+        addLog('Failed to close environment, trying force stop...')
+        try { await stopSimulation({ simulation_id: currentSimulationId.value }); addLog('Simulation force stopped') }
+        catch (stopErr) { addLog(`Force stop failed: ${stopErr.message}`) }
       }
     } else {
-      // Environment not running, check if process needs to be stopped
       if (isSimulating.value) {
         addLog('Stopping simulation process...')
-        try {
-          await stopSimulation({ simulation_id: currentSimulationId.value })
-          addLog('✓ Simulation stopped')
-        } catch (err) {
-          addLog(`Simulation stop failed: ${err.message}`)
-        }
+        try { await stopSimulation({ simulation_id: currentSimulationId.value }); addLog('Simulation stopped') }
+        catch (err) { addLog(`Stop failed: ${err.message}`) }
       }
     }
-  } catch (err) {
-    addLog(`Failed to check simulation status: ${err.message}`)
-  }
-  
-  // Return to Step 2 (Environment Setup)
+  } catch (err) { addLog(`Failed to check status: ${err.message}`) }
   router.push({ name: 'Simulation', params: { simulationId: currentSimulationId.value } })
 }
 
-const handleNextStep = () => {
-  // Step3Simulation component handles report generation and routing directly
-  // This method is just a fallback
-  addLog('Entering Step 4: Report Generation')
-}
+const handleNextStep = () => { addLog('Entering Step 4: Report Generation') }
 
-// --- Data Logic ---
 const loadSimulationData = async () => {
   try {
     addLog(`Loading simulation data: ${currentSimulationId.value}`)
-    
-    // Get simulation info
     const simRes = await getSimulation(currentSimulationId.value)
     if (simRes.success && simRes.data) {
-      const simData = simRes.data
-      
-      // Get simulation config to obtain minutes_per_round
       try {
         const configRes = await getSimulationConfig(currentSimulationId.value)
         if (configRes.success && configRes.data?.time_config?.minutes_per_round) {
           minutesPerRound.value = configRes.data.time_config.minutes_per_round
           addLog(`Time config: ${minutesPerRound.value} minutes per round`)
         }
-      } catch (configErr) {
-        addLog(`Failed to get time config, using default: ${minutesPerRound.value} min/round`)
-      }
-      
-      // Get project info
-      if (simData.project_id) {
-        const projRes = await getProject(simData.project_id)
+      } catch (configErr) { addLog(`Using default: ${minutesPerRound.value} min/round`) }
+      if (simRes.data.project_id) {
+        const projRes = await getProject(simRes.data.project_id)
         if (projRes.success && projRes.data) {
           projectData.value = projRes.data
           addLog(`Project loaded: ${projRes.data.project_id}`)
-          
-          // Get graph data
-          if (projRes.data.graph_id) {
-            await loadGraph(projRes.data.graph_id)
-          }
+          if (projRes.data.graph_id) await loadGraph(projRes.data.graph_id)
         }
       }
-    } else {
-      addLog(`Failed to load simulation data: ${simRes.error || 'Unknown error'}`)
-    }
-  } catch (err) {
-    addLog(`Load error: ${err.message}`)
-  }
+    } else addLog(`Failed to load simulation: ${simRes.error || 'Unknown'}`)
+  } catch (err) { addLog(`Load error: ${err.message}`) }
 }
 
 const loadGraph = async (graphId) => {
-  // During simulation, auto-refresh skips full-screen loading to avoid flicker
-  // Show loading for manual refresh or initial load
-  if (!isSimulating.value) {
-    graphLoading.value = true
-  }
-  
+  if (!isSimulating.value) graphLoading.value = true
   try {
     const res = await getGraphData(graphId)
-    if (res.success) {
-      graphData.value = res.data
-      if (!isSimulating.value) {
-        addLog('Graph data loaded')
-      }
-    }
-  } catch (err) {
-    addLog(`Graph load failed: ${err.message}`)
-  } finally {
-    graphLoading.value = false
-  }
+    if (res.success) { graphData.value = res.data; if (!isSimulating.value) addLog('Graph data loaded') }
+  } catch (err) { addLog(`Graph load failed: ${err.message}`) }
+  finally { graphLoading.value = false }
 }
 
-const refreshGraph = () => {
-  if (projectData.value?.graph_id) {
-    loadGraph(projectData.value.graph_id)
-  }
-}
+const refreshGraph = () => { if (projectData.value?.graph_id) loadGraph(projectData.value.graph_id) }
 
-// --- Auto Refresh Logic ---
 let graphRefreshTimer = null
-
 const startGraphRefresh = () => {
   if (graphRefreshTimer) return
   addLog('Graph real-time refresh enabled (30s)')
-  // Refresh immediately, then every 30 seconds
   graphRefreshTimer = setInterval(refreshGraph, 30000)
 }
-
 const stopGraphRefresh = () => {
-  if (graphRefreshTimer) {
-    clearInterval(graphRefreshTimer)
-    graphRefreshTimer = null
-    addLog('Graph real-time refresh stopped')
-  }
+  if (graphRefreshTimer) { clearInterval(graphRefreshTimer); graphRefreshTimer = null; addLog('Graph refresh stopped') }
 }
 
-watch(isSimulating, (newValue) => {
-  if (newValue) {
-    startGraphRefresh()
-  } else {
-    stopGraphRefresh()
-  }
-}, { immediate: true })
+watch(isSimulating, (v) => { if (v) startGraphRefresh(); else stopGraphRefresh() }, { immediate: true })
 
 onMounted(() => {
   addLog('SimulationRunView initialized')
-
-  // Log maxRounds config (value already obtained from query params at init)
-  if (maxRounds.value) {
-    addLog(`Custom simulation rounds: ${maxRounds.value}`)
-  }
-  
+  if (maxRounds.value) addLog(`Custom simulation rounds: ${maxRounds.value}`)
   loadSimulationData()
 })
-
-onUnmounted(() => {
-  stopGraphRefresh()
-})
+onUnmounted(() => { stopGraphRefresh() })
 </script>
 
 <style scoped>
@@ -315,123 +200,74 @@ onUnmounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: var(--bg-base);
   overflow: hidden;
-  font-family: var(--font-sans);
 }
 
-/* Header */
 .app-header {
-  height: 48px;
-  border-bottom: 1px solid var(--border-color);
+  height: 44px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: var(--bg-primary);
+  background: var(--bg-card);
   z-index: 100;
   position: relative;
 }
 
-.header-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
+.header-center { position: absolute; left: 50%; transform: translateX(-50%); }
 
 .brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
   cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.brand-diamond { color: var(--red); font-size: 14px; }
 
 .view-switcher {
   display: flex;
-  background: var(--bg-primary);
-  padding: 4px;
-  border-radius: 6px;
-  gap: 4px;
+  background: var(--bg-base);
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid var(--border);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 6px 16px;
-  font-size: 12px;
+  padding: 4px 14px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text-secondary);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.switch-btn.active {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  box-shadow: none;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.workflow-step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.step-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
   color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
 }
 
-.step-name {
-  font-weight: 700;
-  color: var(--text-primary);
-}
+.switch-btn.active { background: var(--bg-elevated); color: var(--text-primary); }
 
-.step-divider {
-  width: 1px;
-  height: 14px;
-  background-color: var(--border-color);
-}
+.header-right { display: flex; align-items: center; gap: 16px; }
 
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
+.workflow-step { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.step-num { font-weight: 700; color: var(--text-muted); }
+.step-name { font-weight: 700; color: var(--text-primary); }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--border-hover);
-}
+.status-indicator { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-secondary); }
+.dot { width: 6px; height: 6px; background: var(--border-hover); }
+.status-indicator.processing .dot { background: var(--red); animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: var(--green); }
+.status-indicator.error .dot { background: var(--red); }
 
-.status-indicator.processing .dot { background: var(--accent); animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: var(--success); }
-.status-indicator.error .dot { background: var(--danger); }
+@keyframes pulse { 50% { opacity: 0.4; } }
 
-@keyframes pulse { 50% { opacity: 0.5; } }
-
-/* Content */
-.content-area {
-  flex: 1;
-  display: flex;
-  position: relative;
-  overflow: hidden;
-}
+.content-area { flex: 1; display: flex; position: relative; overflow: hidden; }
 
 .panel-wrapper {
   height: 100%;
@@ -440,8 +276,5 @@ onUnmounted(() => {
   will-change: width, opacity, transform;
 }
 
-.panel-wrapper.left {
-  border-right: 1px solid var(--border-color);
-}
+.panel-wrapper.left { border-right: 1px solid var(--border); }
 </style>
-

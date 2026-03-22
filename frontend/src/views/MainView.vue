@@ -3,7 +3,10 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">PARITY SWARM</div>
+        <div class="brand" @click="router.push('/')">
+          <span class="brand-diamond">&loz;</span>
+          PARITY SWARM
+        </div>
       </div>
 
       <div class="header-center">
@@ -25,7 +28,6 @@
           <span class="step-num">Step {{ currentStep }}/5</span>
           <span class="step-name">{{ stepNames[currentStep - 1] }}</span>
         </div>
-        <div class="step-divider"></div>
         <span class="status-indicator" :class="statusClass">
           <span class="dot"></span>
           {{ statusText }}
@@ -35,7 +37,6 @@
 
     <!-- Main Content Area -->
     <main class="content-area">
-      <!-- Left Panel: Graph -->
       <div class="panel-wrapper left" :style="leftPanelStyle">
         <GraphPanel
           :graphData="graphData"
@@ -46,9 +47,7 @@
         />
       </div>
 
-      <!-- Right Panel: Step Components -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
-        <!-- Step 1: Graph Building -->
         <Step1GraphBuild
           v-if="currentStep === 1"
           :currentPhase="currentPhase"
@@ -59,7 +58,6 @@
           :systemLogs="systemLogs"
           @next-step="handleNextStep"
         />
-        <!-- Step 2: Environment Setup -->
         <Step2EnvSetup
           v-else-if="currentStep === 2"
           :projectData="projectData"
@@ -75,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import GraphPanel from '../components/GraphPanel.vue'
 import Step1GraphBuild from '../components/Step1GraphBuild.vue'
@@ -350,14 +348,13 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: var(--bg-base);
   overflow: hidden;
-  font-family: var(--font-sans);
 }
 
 .app-header {
-  height: 48px;
-  border-bottom: 1px solid var(--border-color);
+  height: 44px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -374,47 +371,44 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
 }
 
 .brand {
-  font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 1.5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
   cursor: pointer;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-diamond {
+  color: var(--red);
+  font-size: 14px;
 }
 
 .view-switcher {
   display: flex;
-  background: var(--bg-primary);
-  padding: 3px;
-  border-radius: 6px;
+  background: var(--bg-base);
+  padding: 2px;
   gap: 2px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 5px 14px;
-  font-size: 11px;
+  padding: 4px 14px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-muted);
-  border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
+  letter-spacing: 0.5px;
 }
 
 .switch-btn.active {
   background: var(--bg-elevated);
   color: var(--text-primary);
-}
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: var(--text-secondary);
-  font-weight: 500;
 }
 
 .header-right {
@@ -427,11 +421,10 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .step-num {
-  font-family: var(--font-mono);
   font-weight: 700;
   color: var(--text-muted);
 }
@@ -441,24 +434,26 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
   color: var(--text-primary);
 }
 
-.step-divider {
-  width: 1px;
-  height: 14px;
-  background-color: var(--border-color);
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 6px;
+  height: 6px;
   background: var(--border-hover);
 }
 
-.status-indicator.processing .dot { background: var(--accent); animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: var(--success); }
-.status-indicator.error .dot { background: var(--danger); }
+.status-indicator.processing .dot { background: var(--red); animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: var(--green); }
+.status-indicator.error .dot { background: var(--red); }
 
-@keyframes pulse { 50% { opacity: 0.5; } }
+@keyframes pulse { 50% { opacity: 0.4; } }
 
 .content-area {
   flex: 1;
@@ -475,6 +470,6 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid var(--border);
 }
 </style>

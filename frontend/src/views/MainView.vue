@@ -5,11 +5,11 @@
       <div class="header-left">
         <div class="brand" @click="router.push('/')">PARITY SWARM</div>
       </div>
-      
+
       <div class="header-center">
         <div class="view-switcher">
-          <button 
-            v-for="mode in ['graph', 'split', 'workbench']" 
+          <button
+            v-for="mode in ['graph', 'split', 'workbench']"
             :key="mode"
             class="switch-btn"
             :class="{ active: viewMode === mode }"
@@ -37,7 +37,7 @@
     <main class="content-area">
       <!-- Left Panel: Graph -->
       <div class="panel-wrapper left" :style="leftPanelStyle">
-        <GraphPanel 
+        <GraphPanel
           :graphData="graphData"
           :loading="graphLoading"
           :currentPhase="currentPhase"
@@ -49,7 +49,7 @@
       <!-- Right Panel: Step Components -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <!-- Step 1: Graph Building -->
-        <Step1GraphBuild 
+        <Step1GraphBuild
           v-if="currentStep === 1"
           :currentPhase="currentPhase"
           :projectData="projectData"
@@ -86,30 +86,24 @@ import { getPendingUpload, clearPendingUpload } from '../store/pendingUpload'
 const route = useRoute()
 const router = useRouter()
 
-// Layout State
-const viewMode = ref('split') // graph | split | workbench
-
-// Step State
-const currentStep = ref(1) // 1: Graph Building, 2: Environment Setup, 3: Run Simulation, 4: Report Generation, 5: Deep Interaction
+const viewMode = ref('split')
+const currentStep = ref(1)
 const stepNames = ['Graph Building', 'Environment Setup', 'Run Simulation', 'Report Generation', 'Deep Interaction']
 
-// Data State
 const currentProjectId = ref(route.params.projectId)
 const loading = ref(false)
 const graphLoading = ref(false)
 const error = ref('')
 const projectData = ref(null)
 const graphData = ref(null)
-const currentPhase = ref(-1) // -1: Upload, 0: Ontology, 1: Build, 2: Complete
+const currentPhase = ref(-1)
 const ontologyProgress = ref(null)
 const buildProgress = ref(null)
 const systemLogs = ref([])
 
-// Polling timers
 let pollTimer = null
 let graphPollTimer = null
 
-// --- Computed Layout Styles ---
 const leftPanelStyle = computed(() => {
   if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
   if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
@@ -122,7 +116,6 @@ const rightPanelStyle = computed(() => {
   return { width: '50%', opacity: 1, transform: 'translateX(0)' }
 })
 
-// --- Status Computed ---
 const statusClass = computed(() => {
   if (error.value) return 'error'
   if (currentPhase.value >= 2) return 'completed'
@@ -137,34 +130,21 @@ const statusText = computed(() => {
   return 'Initializing'
 })
 
-// --- Helpers ---
 const addLog = (msg) => {
   const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
-  // Keep last 100 logs
-  if (systemLogs.value.length > 100) {
-    systemLogs.value.shift()
-  }
+  if (systemLogs.value.length > 100) systemLogs.value.shift()
 }
 
-// --- Layout Methods ---
 const toggleMaximize = (target) => {
-  if (viewMode.value === target) {
-    viewMode.value = 'split'
-  } else {
-    viewMode.value = target
-  }
+  viewMode.value = viewMode.value === target ? 'split' : target
 }
 
 const handleNextStep = (params = {}) => {
   if (currentStep.value < 5) {
     currentStep.value++
     addLog(`Entering Step ${currentStep.value}: ${stepNames[currentStep.value - 1]}`)
-
-    // If entering Step 3 from Step 2, log simulation rounds config
-    if (currentStep.value === 3 && params.maxRounds) {
-      addLog(`Custom simulation rounds: ${params.maxRounds}`)
-    }
+    if (currentStep.value === 3 && params.maxRounds) addLog(`Custom simulation rounds: ${params.maxRounds}`)
   }
 }
 
@@ -175,15 +155,10 @@ const handleGoBack = () => {
   }
 }
 
-// --- Data Logic ---
-
 const initProject = async () => {
   addLog('Project view initialized.')
-  if (currentProjectId.value === 'new') {
-    await handleNewProject()
-  } else {
-    await loadProject()
-  }
+  if (currentProjectId.value === 'new') await handleNewProject()
+  else await loadProject()
 }
 
 const handleNewProject = async () => {
@@ -193,23 +168,19 @@ const handleNewProject = async () => {
     addLog('Error: No pending files found for new project.')
     return
   }
-  
   try {
     loading.value = true
     currentPhase.value = 0
     ontologyProgress.value = { message: 'Uploading and analyzing docs...' }
     addLog('Starting ontology generation: Uploading files...')
-    
     const formData = new FormData()
     pending.files.forEach(f => formData.append('files', f))
     formData.append('simulation_requirement', pending.simulationRequirement)
-    
     const res = await generateOntology(formData)
     if (res.success) {
       clearPendingUpload()
       currentProjectId.value = res.data.project_id
       projectData.value = res.data
-      
       router.replace({ name: 'Process', params: { projectId: res.data.project_id } })
       ontologyProgress.value = null
       addLog(`Ontology generated successfully for project ${res.data.project_id}`)
@@ -235,10 +206,8 @@ const loadProject = async () => {
       projectData.value = res.data
       updatePhaseByStatus(res.data.status)
       addLog(`Project loaded. Status: ${res.data.status}`)
-      
-      if (res.data.status === 'ontology_generated' && !res.data.graph_id) {
-        await startBuildGraph()
-      } else if (res.data.status === 'graph_building' && res.data.graph_build_task_id) {
+      if (res.data.status === 'ontology_generated' && !res.data.graph_id) await startBuildGraph()
+      else if (res.data.status === 'graph_building' && res.data.graph_build_task_id) {
         currentPhase.value = 1
         startPollingTask(res.data.graph_build_task_id)
         startGraphPolling()
@@ -273,7 +242,6 @@ const startBuildGraph = async () => {
     currentPhase.value = 1
     buildProgress.value = { progress: 0, message: 'Starting build...' }
     addLog('Initiating graph build...')
-    
     const res = await buildGraph({ project_id: currentProjectId.value })
     if (res.success) {
       addLog(`Graph build task started. Task ID: ${res.data.task_id}`)
@@ -297,7 +265,6 @@ const startGraphPolling = () => {
 
 const fetchGraphData = async () => {
   try {
-    // Refresh project info to check for graph_id
     const projRes = await getProject(currentProjectId.value)
     if (projRes.success && projRes.data.graph_id) {
       const gRes = await getGraphData(projRes.data.graph_id)
@@ -323,25 +290,17 @@ const pollTaskStatus = async (taskId) => {
     const res = await getTaskStatus(taskId)
     if (res.success) {
       const task = res.data
-      
-      // Log progress message if it changed
-      if (task.message && task.message !== buildProgress.value?.message) {
-        addLog(task.message)
-      }
-      
+      if (task.message && task.message !== buildProgress.value?.message) addLog(task.message)
       buildProgress.value = { progress: task.progress || 0, message: task.message }
-      
       if (task.status === 'completed') {
         addLog('Graph build task completed.')
         stopPolling()
-        stopGraphPolling() // Stop polling, do final load
+        stopGraphPolling()
         currentPhase.value = 2
-        
-        // Final load
         const projRes = await getProject(currentProjectId.value)
         if (projRes.success && projRes.data.graph_id) {
-            projectData.value = projRes.data
-            await loadGraph(projRes.data.graph_id)
+          projectData.value = projRes.data
+          await loadGraph(projRes.data.graph_id)
         }
       } else if (task.status === 'failed') {
         stopPolling()
@@ -379,29 +338,11 @@ const refreshGraph = () => {
   }
 }
 
-const stopPolling = () => {
-  if (pollTimer) {
-    clearInterval(pollTimer)
-    pollTimer = null
-  }
-}
+const stopPolling = () => { if (pollTimer) { clearInterval(pollTimer); pollTimer = null } }
+const stopGraphPolling = () => { if (graphPollTimer) { clearInterval(graphPollTimer); graphPollTimer = null; addLog('Graph polling stopped.') } }
 
-const stopGraphPolling = () => {
-  if (graphPollTimer) {
-    clearInterval(graphPollTimer)
-    graphPollTimer = null
-    addLog('Graph polling stopped.')
-  }
-}
-
-onMounted(() => {
-  initProject()
-})
-
-onUnmounted(() => {
-  stopPolling()
-  stopGraphPolling()
-})
+onMounted(() => { initProject() })
+onUnmounted(() => { stopPolling(); stopGraphPolling() })
 </script>
 
 <style scoped>
@@ -409,20 +350,19 @@ onUnmounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #FFF;
+  background: var(--bg-primary);
   overflow: hidden;
-  font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
-/* Header */
 .app-header {
-  height: 60px;
-  border-bottom: 1px solid #EAEAEA;
+  height: 48px;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: #FFF;
+  background: var(--bg-card);
   z-index: 100;
   position: relative;
 }
@@ -434,45 +374,46 @@ onUnmounted(() => {
 }
 
 .brand {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
+  font-size: 13px;
+  letter-spacing: 1.5px;
   cursor: pointer;
+  color: var(--text-primary);
 }
 
 .view-switcher {
   display: flex;
-  background: #F5F5F5;
-  padding: 4px;
+  background: var(--bg-primary);
+  padding: 3px;
   border-radius: 6px;
-  gap: 4px;
+  gap: 2px;
+  border: 1px solid var(--border-color);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 6px 16px;
-  font-size: 12px;
+  padding: 5px 14px;
+  font-size: 11px;
   font-weight: 600;
-  color: #666;
+  color: var(--text-muted);
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .switch-btn.active {
-  background: #FFF;
-  color: #000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .status-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  color: #666;
+  font-size: 11px;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -486,40 +427,39 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .step-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
-  color: #999;
+  color: var(--text-muted);
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .step-divider {
   width: 1px;
   height: 14px;
-  background-color: #E0E0E0;
+  background-color: var(--border-color);
 }
 
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #CCC;
+  background: var(--border-hover);
 }
 
-.status-indicator.processing .dot { background: #FF5722; animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: #4CAF50; }
-.status-indicator.error .dot { background: #F44336; }
+.status-indicator.processing .dot { background: var(--accent); animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: var(--success); }
+.status-indicator.error .dot { background: var(--danger); }
 
 @keyframes pulse { 50% { opacity: 0.5; } }
 
-/* Content */
 .content-area {
   flex: 1;
   display: flex;
@@ -535,6 +475,6 @@ onUnmounted(() => {
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid var(--border-color);
 }
 </style>

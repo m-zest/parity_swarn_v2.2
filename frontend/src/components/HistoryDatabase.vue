@@ -666,7 +666,7 @@ onUnmounted(() => {
 .project-card {
   position: absolute;
   width: 280px;
-  background: #FFFFFF;
+  background: #111111;
   border: 1px solid #E5E7EB;
   border-radius: 0;
   padding: 14px;
@@ -1027,7 +1027,7 @@ onUnmounted(() => {
 }
 
 .modal-content {
-  background: #FFFFFF;
+  background: #111111;
   width: 560px;
   max-width: 90vw;
   max-height: 85vh;
@@ -1073,7 +1073,7 @@ onUnmounted(() => {
   align-items: center;
   padding: 20px 32px;
   border-bottom: 1px solid #F3F4F6;
-  background: #FFFFFF;
+  background: #111111;
 }
 
 .modal-title-section {
@@ -1199,7 +1199,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  background: #FFFFFF;
+  background: #111111;
   border: 1px solid #E5E7EB;
   border-radius: 6px;
   transition: all 0.2s ease;
@@ -1235,7 +1235,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 16px;
   padding: 10px 32px 0;
-  background: #FFFFFF;
+  background: #111111;
 }
 
 .divider-line {
@@ -1258,7 +1258,7 @@ onUnmounted(() => {
   display: flex;
   gap: 16px;
   padding: 20px 32px;
-  background: #FFFFFF;
+  background: #111111;
 }
 
 .modal-btn {
@@ -1270,7 +1270,7 @@ onUnmounted(() => {
   padding: 16px;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
-  background: #FFFFFF;
+  background: #111111;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -1278,7 +1278,7 @@ onUnmounted(() => {
 }
 
 .modal-btn:hover:not(:disabled) {
-  border-color: #000000;
+  border-color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -1326,7 +1326,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 0 32px 20px;
-  background: #FFFFFF;
+  background: #111111;
 }
 
 .hint-text {

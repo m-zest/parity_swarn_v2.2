@@ -701,19 +701,19 @@ onUnmounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #FFFFFF;
+  background: #111111;
   font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
   overflow: hidden;
 }
 
 /* --- Control Bar --- */
 .control-bar {
-  background: #FFF;
+  background: #111111;
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid #222222;
   z-index: 10;
   height: 64px;
 }
@@ -730,8 +730,8 @@ onUnmounted(() => {
   gap: 4px;
   padding: 6px 12px;
   border-radius: 4px;
-  background: #FAFAFA;
-  border: 1px solid #EAEAEA;
+  background: #161616;
+  border: 1px solid #222222;
   opacity: 0.7;
   transition: all 0.3s;
   min-width: 140px;
@@ -741,8 +741,8 @@ onUnmounted(() => {
 
 .platform-status.active {
   opacity: 1;
-  border-color: #333;
-  background: #FFF;
+  border-color: #e2e8f0;
+  background: #111111;
 }
 
 .platform-status.completed {
@@ -759,7 +759,7 @@ onUnmounted(() => {
   transform: translateX(-50%);
   margin-top: 8px;
   padding: 10px 14px;
-  background: #000;
+  background: #3b82f6;
   color: #FFF;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -790,7 +790,7 @@ onUnmounted(() => {
 .tooltip-title {
   font-size: 10px;
   font-weight: 600;
-  color: #999;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
@@ -822,13 +822,13 @@ onUnmounted(() => {
 .platform-name {
   font-size: 11px;
   font-weight: 700;
-  color: #000;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.platform-status.twitter .platform-icon { color: #000; }
-.platform-status.reddit .platform-icon { color: #000; }
+.platform-status.twitter .platform-icon { color: #ffffff; }
+.platform-status.reddit .platform-icon { color: #ffffff; }
 
 .platform-stats {
   display: flex;
@@ -843,7 +843,7 @@ onUnmounted(() => {
 
 .stat-label {
   font-size: 8px;
-  color: #999;
+  color: #64748b;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -852,12 +852,12 @@ onUnmounted(() => {
 .stat-value {
   font-size: 11px;
   font-weight: 600;
-  color: #333;
+  color: #e2e8f0;
 }
 
 .stat-total, .stat-unit {
   font-size: 9px;
-  color: #999;
+  color: #64748b;
   font-weight: 400;
 }
 
@@ -885,7 +885,7 @@ onUnmounted(() => {
 }
 
 .action-btn.primary {
-  background: #000;
+  background: #3b82f6;
   color: #FFF;
 }
 
@@ -903,7 +903,7 @@ onUnmounted(() => {
   flex: 1;
   overflow-y: auto;
   position: relative;
-  background: #FFF;
+  background: #111111;
 }
 
 /* Timeline Header */
@@ -913,7 +913,7 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   padding: 12px 24px;
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid #222222;
   z-index: 5;
   display: flex;
   justify-content: center;
@@ -924,15 +924,15 @@ onUnmounted(() => {
   align-items: center;
   gap: 16px;
   font-size: 11px;
-  color: #666;
-  background: #F5F5F5;
+  color: #94a3b8;
+  background: #161616;
   padding: 4px 12px;
   border-radius: 20px;
 }
 
 .total-count {
   font-weight: 600;
-  color: #333;
+  color: #e2e8f0;
 }
 
 .platform-breakdown {
@@ -947,9 +947,9 @@ onUnmounted(() => {
   gap: 4px;
 }
 
-.breakdown-divider { color: #DDD; }
-.breakdown-item.twitter { color: #000; }
-.breakdown-item.reddit { color: #000; }
+.breakdown-divider { color: #94a3b8; }
+.breakdown-item.twitter { color: #ffffff; }
+.breakdown-item.reddit { color: #ffffff; }
 
 /* --- Timeline Feed --- */
 .timeline-feed {
@@ -984,8 +984,8 @@ onUnmounted(() => {
   top: 24px;
   width: 10px;
   height: 10px;
-  background: #FFF;
-  border: 1px solid #CCC;
+  background: #111111;
+  border: 1px solid #222222;
   border-radius: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -1001,18 +1001,18 @@ onUnmounted(() => {
   border-radius: 50%;
 }
 
-.timeline-item.twitter .marker-dot { background: #000; }
-.timeline-item.reddit .marker-dot { background: #000; }
-.timeline-item.twitter .timeline-marker { border-color: #000; }
-.timeline-item.reddit .timeline-marker { border-color: #000; }
+.timeline-item.twitter .marker-dot { background: #3b82f6; }
+.timeline-item.reddit .marker-dot { background: #3b82f6; }
+.timeline-item.twitter .timeline-marker { border-color: #ffffff; }
+.timeline-item.reddit .timeline-marker { border-color: #ffffff; }
 
 /* Card Layout */
 .timeline-card {
   width: calc(100% - 48px);
-  background: #FFF;
+  background: #111111;
   border-radius: 2px;
   padding: 16px 20px;
-  border: 1px solid #EAEAEA;
+  border: 1px solid #222222;
   box-shadow: 0 2px 10px rgba(0,0,0,0.02);
   position: relative;
   transition: all 0.2s;
@@ -1020,7 +1020,7 @@ onUnmounted(() => {
 
 .timeline-card:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border-color: #DDD;
+  border-color: #222222;
 }
 
 /* Left side (Twitter) */
@@ -1062,7 +1062,7 @@ onUnmounted(() => {
 .avatar-placeholder {
   width: 24px;
   height: 24px;
-  background: #000;
+  background: #3b82f6;
   color: #FFF;
   border-radius: 50%;
   display: flex;
@@ -1076,7 +1076,7 @@ onUnmounted(() => {
 .agent-name {
   font-size: 13px;
   font-weight: 600;
-  color: #000;
+  color: #ffffff;
 }
 
 .header-meta {
@@ -1086,7 +1086,7 @@ onUnmounted(() => {
 }
 
 .platform-indicator {
-  color: #999;
+  color: #64748b;
   display: flex;
   align-items: center;
 }
@@ -1102,33 +1102,33 @@ onUnmounted(() => {
 }
 
 /* Monochromatic Badges */
-.badge-post { background: #F0F0F0; color: #333; border-color: #E0E0E0; }
-.badge-comment { background: #F0F0F0; color: #666; border-color: #E0E0E0; }
-.badge-action { background: #FFF; color: #666; border: 1px solid #E0E0E0; }
-.badge-meta { background: #FAFAFA; color: #999; border: 1px dashed #DDD; }
+.badge-post { background: #1a1a1a; color: #333; border-color: #222222; }
+.badge-comment { background: #1a1a1a; color: #666; border-color: #222222; }
+.badge-action { background: #111111; color: #666; border: 1px solid #222222; }
+.badge-meta { background: #161616; color: #999; border: 1px dashed #333333; }
 .badge-idle { opacity: 0.5; }
 
 .content-text {
   font-size: 13px;
   line-height: 1.6;
-  color: #333;
+  color: #e2e8f0;
   margin-bottom: 10px;
 }
 
 .content-text.main-text {
   font-size: 14px;
-  color: #000;
+  color: #ffffff;
 }
 
 /* Info Blocks (Quote, Repost, etc) */
 .quoted-block, .repost-content {
-  background: #F9F9F9;
-  border: 1px solid #EEE;
+  background: #161616;
+  border: 1px solid #222222;
   padding: 10px 12px;
   border-radius: 2px;
   margin-top: 8px;
   font-size: 12px;
-  color: #555;
+  color: #94a3b8;
 }
 
 .quote-header, .repost-info, .like-info, .search-info, .follow-info, .vote-info, .idle-info, .comment-context {
@@ -1137,19 +1137,19 @@ onUnmounted(() => {
   gap: 6px;
   margin-bottom: 6px;
   font-size: 11px;
-  color: #666;
+  color: #94a3b8;
 }
 
 .icon-small {
-  color: #999;
+  color: #64748b;
 }
 .icon-small.filled {
-  color: #999; /* Keep icons neutral unless highlighted */
+  color: #64748b; /* Keep icons neutral unless highlighted */
 }
 
 .search-query {
   font-family: 'JetBrains Mono', monospace;
-  background: #F0F0F0;
+  background: #1a1a1a;
   padding: 0 4px;
   border-radius: 2px;
 }
@@ -1159,7 +1159,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-end;
   font-size: 10px;
-  color: #BBB;
+  color: #475569;
   font-family: 'JetBrains Mono', monospace;
 }
 
@@ -1173,7 +1173,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  color: #CCC;
+  color: #475569;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1183,12 +1183,12 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid #EAEAEA;
+  border: 1px solid #222222;
   animation: ripple 2s infinite;
 }
 
 @keyframes ripple {
-  0% { transform: scale(0.8); opacity: 1; border-color: #CCC; }
+  0% { transform: scale(0.8); opacity: 1; border-color: #222222; }
   100% { transform: scale(2.5); opacity: 0; border-color: #EAEAEA; }
 }
 
@@ -1209,8 +1209,8 @@ onUnmounted(() => {
 
 /* Logs */
 .system-logs {
-  background: #000;
-  color: #DDD;
+  background: #3b82f6;
+  color: #94a3b8;
   padding: 16px;
   font-family: 'JetBrains Mono', monospace;
   border-top: 1px solid #222;
@@ -1224,7 +1224,7 @@ onUnmounted(() => {
   padding-bottom: 8px;
   margin-bottom: 8px;
   font-size: 10px;
-  color: #666;
+  color: #94a3b8;
 }
 
 .log-content {
@@ -1246,8 +1246,8 @@ onUnmounted(() => {
   line-height: 1.5;
 }
 
-.log-time { color: #555; min-width: 75px; }
-.log-msg { color: #BBB; word-break: break-all; }
+.log-time { color: #94a3b8; min-width: 75px; }
+.log-msg { color: #475569; word-break: break-all; }
 .mono { font-family: 'JetBrains Mono', monospace; }
 
 /* Loading spinner for button */

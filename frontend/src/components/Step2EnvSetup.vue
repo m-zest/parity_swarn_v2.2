@@ -1085,7 +1085,7 @@ onUnmounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #FAFAFA;
+  background: #161616;
   font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
 }
 
@@ -1100,18 +1100,18 @@ onUnmounted(() => {
 
 /* Step Card */
 .step-card {
-  background: #FFF;
+  background: #111111;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border: 1px solid #EAEAEA;
+  box-shadow: none;
+  border: 1px solid #222222;
   transition: all 0.3s ease;
   position: relative;
 }
 
 .step-card.active {
-  border-color: #FF5722;
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.08);
+  border-color: #3b82f6;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
 }
 
 .card-header {
@@ -1136,7 +1136,7 @@ onUnmounted(() => {
 
 .step-card.active .step-num,
 .step-card.completed .step-num {
-  color: #000;
+  color: #ffffff;
 }
 
 .step-title {
@@ -1153,10 +1153,10 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-.badge.success { background: #E8F5E9; color: #2E7D32; }
-.badge.processing { background: #FF5722; color: #FFF; }
-.badge.pending { background: #F5F5F5; color: #999; }
-.badge.accent { background: #E3F2FD; color: #1565C0; }
+.badge.success { background: rgba(34,197,94,0.1); color: #2E7D32; }
+.badge.processing { background: #3b82f6; color: #FFF; }
+.badge.pending { background: #161616; color: #999; }
+.badge.accent { background: rgba(59,130,246,0.1); color: #1565C0; }
 
 .card-content {
   /* No extra padding - uses step-card's padding */
@@ -1165,13 +1165,13 @@ onUnmounted(() => {
 .api-note {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  color: #999;
+  color: #64748b;
   margin-bottom: 8px;
 }
 
 .description {
   font-size: 12px;
-  color: #666;
+  color: #94a3b8;
   line-height: 1.5;
   margin-bottom: 16px;
 }
@@ -1195,7 +1195,7 @@ onUnmounted(() => {
 }
 
 .action-btn.primary {
-  background: #000;
+  background: #3b82f6;
   color: #FFF;
 }
 
@@ -1204,8 +1204,8 @@ onUnmounted(() => {
 }
 
 .action-btn.secondary {
-  background: #F5F5F5;
-  color: #333;
+  background: #161616;
+  color: #e2e8f0;
 }
 
 .action-btn.secondary:hover:not(:disabled) {
@@ -1234,7 +1234,7 @@ onUnmounted(() => {
 
 /* Info Card */
 .info-card {
-  background: #F5F5F5;
+  background: #161616;
   border-radius: 6px;
   padding: 16px;
   margin-top: 16px;
@@ -1254,7 +1254,7 @@ onUnmounted(() => {
 
 .info-label {
   font-size: 12px;
-  color: #666;
+  color: #94a3b8;
 }
 
 .info-value {
@@ -1272,7 +1272,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
-  background: #F9F9F9;
+  background: #161616;
   padding: 16px;
   border-radius: 6px;
 }
@@ -1285,13 +1285,13 @@ onUnmounted(() => {
   display: block;
   font-size: 20px;
   font-weight: 700;
-  color: #000;
+  color: #ffffff;
   font-family: 'JetBrains Mono', monospace;
 }
 
 .stat-label {
   font-size: 9px;
-  color: #999;
+  color: #64748b;
   text-transform: uppercase;
   margin-top: 4px;
   display: block;
@@ -1314,7 +1314,7 @@ onUnmounted(() => {
 .preview-title {
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1342,8 +1342,8 @@ onUnmounted(() => {
 }
 
 .profile-card {
-  background: #FAFAFA;
-  border: 1px solid #E5E5E5;
+  background: #161616;
+  border: 1px solid #222222;
   border-radius: 6px;
   padding: 14px;
   cursor: pointer;
@@ -1351,8 +1351,8 @@ onUnmounted(() => {
 }
 
 .profile-card:hover {
-  border-color: #999;
-  background: #FFF;
+  border-color: #64748b;
+  background: #111111;
 }
 
 .profile-header {
@@ -1365,13 +1365,13 @@ onUnmounted(() => {
 .profile-realname {
   font-size: 14px;
   font-weight: 700;
-  color: #000;
+  color: #ffffff;
 }
 
 .profile-username {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #999;
+  color: #64748b;
 }
 
 .profile-meta {
@@ -1380,15 +1380,15 @@ onUnmounted(() => {
 
 .profile-profession {
   font-size: 11px;
-  color: #666;
-  background: #F0F0F0;
+  color: #94a3b8;
+  background: #1a1a1a;
   padding: 2px 8px;
   border-radius: 3px;
 }
 
 .profile-bio {
   font-size: 12px;
-  color: #444;
+  color: #cbd5e1;
   line-height: 1.6;
   margin: 0 0 10px 0;
   display: -webkit-box;
@@ -1406,14 +1406,14 @@ onUnmounted(() => {
 .topic-tag {
   font-size: 10px;
   color: #1565C0;
-  background: #E3F2FD;
+  background: rgba(59,130,246,0.1);
   padding: 2px 8px;
   border-radius: 10px;
 }
 
 .topic-more {
   font-size: 10px;
-  color: #999;
+  color: #64748b;
   padding: 2px 6px;
 }
 
@@ -1445,7 +1445,7 @@ onUnmounted(() => {
 .config-block-title {
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1467,7 +1467,7 @@ onUnmounted(() => {
 }
 
 .config-item {
-  background: #F9F9F9;
+  background: #161616;
   padding: 12px 14px;
   border-radius: 6px;
   display: flex;
@@ -1500,7 +1500,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
-  background: #F9F9F9;
+  background: #161616;
   border-radius: 6px;
 }
 
@@ -1552,16 +1552,16 @@ onUnmounted(() => {
 }
 
 .agent-card {
-  background: #F9F9F9;
-  border: 1px solid #E5E5E5;
+  background: #161616;
+  border: 1px solid #222222;
   border-radius: 6px;
   padding: 14px;
   transition: all 0.2s ease;
 }
 
 .agent-card:hover {
-  border-color: #999;
-  background: #FFF;
+  border-color: #64748b;
+  background: #111111;
 }
 
 /* Agent Card Header */
@@ -1745,7 +1745,7 @@ onUnmounted(() => {
 }
 
 .platform-card {
-  background: #F9F9F9;
+  background: #161616;
   padding: 14px;
   border-radius: 6px;
 }
@@ -1759,7 +1759,7 @@ onUnmounted(() => {
 .platform-name {
   font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: #e2e8f0;
 }
 
 .platform-params {
@@ -1795,13 +1795,13 @@ onUnmounted(() => {
 
 .reasoning-item {
   padding: 12px 14px;
-  background: #F9F9F9;
+  background: #161616;
   border-radius: 6px;
 }
 
 .reasoning-text {
   font-size: 13px;
-  color: #555;
+  color: #94a3b8;
   line-height: 1.7;
   margin: 0;
 }
@@ -1822,7 +1822,7 @@ onUnmounted(() => {
 }
 
 .profile-modal {
-  background: #FFF;
+  background: #111111;
   border-radius: 16px;
   width: 90%;
   max-width: 600px;
@@ -1838,7 +1838,7 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: flex-start;
   padding: 24px;
-  background: #FFF;
+  background: #111111;
   border-bottom: 1px solid #F0F0F0;
 }
 
@@ -1856,19 +1856,19 @@ onUnmounted(() => {
 .modal-realname {
   font-size: 20px;
   font-weight: 700;
-  color: #000;
+  color: #ffffff;
 }
 
 .modal-username {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  color: #999;
+  color: #64748b;
 }
 
 .modal-profession {
   font-size: 12px;
-  color: #666;
-  background: #F5F5F5;
+  color: #94a3b8;
+  background: #161616;
   padding: 4px 10px;
   border-radius: 4px;
   display: inline-block;
@@ -1880,7 +1880,7 @@ onUnmounted(() => {
   height: 32px;
   border: none;
   background: none;
-  color: #999;
+  color: #64748b;
   border-radius: 50%;
   font-size: 24px;
   cursor: pointer;
@@ -1893,7 +1893,7 @@ onUnmounted(() => {
 }
 
 .close-btn:hover {
-  color: #333;
+  color: #e2e8f0;
 }
 
 .modal-body {
@@ -1921,7 +1921,7 @@ onUnmounted(() => {
 
 .info-label {
   font-size: 11px;
-  color: #999;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 600;
@@ -1930,12 +1930,12 @@ onUnmounted(() => {
 .info-value {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: #e2e8f0;
 }
 
 .info-value.mbti {
   font-family: 'JetBrains Mono', monospace;
-  color: #FF5722;
+  color: #3b82f6;
 }
 
 /* Section area */
@@ -1947,7 +1947,7 @@ onUnmounted(() => {
   display: block;
   font-size: 11px;
   font-weight: 600;
-  color: #999;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
@@ -1955,11 +1955,11 @@ onUnmounted(() => {
 
 .section-bio {
   font-size: 14px;
-  color: #333;
+  color: #e2e8f0;
   line-height: 1.6;
   margin: 0;
   padding: 16px;
-  background: #F9F9F9;
+  background: #161616;
   border-radius: 6px;
   border-left: 3px solid #E0E0E0;
 }
@@ -1974,7 +1974,7 @@ onUnmounted(() => {
 .topic-item {
   font-size: 11px;
   color: #1565C0;
-  background: #E3F2FD;
+  background: rgba(59,130,246,0.1);
   padding: 4px 10px;
   border-radius: 12px;
   transition: all 0.2s;
@@ -2003,22 +2003,22 @@ onUnmounted(() => {
 }
 
 .dimension-card:hover {
-  background: #F0F0F0;
-  border-left-color: #999;
+  background: #1a1a1a;
+  border-left-color: #64748b;
 }
 
 .dim-title {
   display: block;
   font-size: 12px;
   font-weight: 700;
-  color: #333;
+  color: #e2e8f0;
   margin-bottom: 4px;
 }
 
 .dim-desc {
   display: block;
   font-size: 10px;
-  color: #888;
+  color: #64748b;
   line-height: 1.4;
 }
 
@@ -2042,7 +2042,7 @@ onUnmounted(() => {
 
 .section-persona {
   font-size: 13px;
-  color: #555;
+  color: #94a3b8;
   line-height: 1.8;
   margin: 0;
   text-align: justify;
@@ -2050,8 +2050,8 @@ onUnmounted(() => {
 
 /* System Logs */
 .system-logs {
-  background: #000;
-  color: #DDD;
+  background: #3b82f6;
+  color: #94a3b8;
   padding: 16px;
   font-family: 'JetBrains Mono', monospace;
   border-top: 1px solid #222;
@@ -2065,7 +2065,7 @@ onUnmounted(() => {
   padding-bottom: 8px;
   margin-bottom: 8px;
   font-size: 10px;
-  color: #888;
+  color: #64748b;
 }
 
 .log-content {
@@ -2094,12 +2094,12 @@ onUnmounted(() => {
 }
 
 .log-time {
-  color: #666;
+  color: #94a3b8;
   min-width: 75px;
 }
 
 .log-msg {
-  color: #CCC;
+  color: #475569;
   word-break: break-all;
 }
 
@@ -2108,7 +2108,7 @@ onUnmounted(() => {
   width: 16px;
   height: 16px;
   border: 2px solid #E5E5E5;
-  border-top-color: #FF5722;
+  border-top-color: #3b82f6;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -2128,14 +2128,14 @@ onUnmounted(() => {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
 }
 
 .narrative-box {
-  background: #FFFFFF;
+  background: #111111;
   padding: 20px 24px;
   border-radius: 12px;
   border: 1px solid #EEF2F6;
@@ -2147,7 +2147,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
+  color: #94a3b8;
   font-size: 13px;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
@@ -2174,7 +2174,7 @@ onUnmounted(() => {
 }
 
 .topics-section {
-  background: #FFF;
+  background: #111111;
 }
 
 .hot-topics-grid {
@@ -2186,7 +2186,7 @@ onUnmounted(() => {
 .hot-topic-tag {
   font-size: 12px;
   color:rgba(255, 86, 34, 0.88);
-  background: #FFF3E0;
+  background: rgba(245,158,11,0.1);
   padding: 4px 10px;
   border-radius: 12px;
   font-weight: 500;
@@ -2194,12 +2194,12 @@ onUnmounted(() => {
 
 .hot-topic-more {
   font-size: 11px;
-  color: #999;
+  color: #64748b;
   padding: 4px 6px;
 }
 
 .initial-posts-section {
-  border-top: 1px solid #EAEAEA;
+  border-top: 1px solid #222222;
   padding-top: 16px;
 }
 
@@ -2227,10 +2227,10 @@ onUnmounted(() => {
 }
 
 .timeline-content {
-  background: #F9F9F9;
+  background: #161616;
   padding: 12px;
   border-radius: 6px;
-  border: 1px solid #EEE;
+  border: 1px solid #222222;
 }
 
 .post-header {
@@ -2242,7 +2242,7 @@ onUnmounted(() => {
 .post-role {
   font-size: 11px;
   font-weight: 700;
-  color: #333;
+  color: #e2e8f0;
   text-transform: uppercase;
 }
 
@@ -2256,7 +2256,7 @@ onUnmounted(() => {
 .post-username {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  color: #666;
+  color: #94a3b8;
   line-height: 1;
   vertical-align: baseline;
 }
@@ -2267,7 +2267,7 @@ onUnmounted(() => {
 
 .post-text {
   font-size: 12px;
-  color: #555;
+  color: #94a3b8;
   line-height: 1.5;
   margin: 0;
 }
@@ -2276,7 +2276,7 @@ onUnmounted(() => {
 .rounds-config-section {
   margin: 24px 0;
   padding-top: 24px;
-  border-top: 1px solid #EAEAEA;
+  border-top: 1px solid #222222;
 }
 
 .rounds-header {
@@ -2348,14 +2348,14 @@ onUnmounted(() => {
   top: 2px;
   width: 16px;
   height: 16px;
-  background: #FFF;
+  background: #111111;
   border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .switch-control input:checked + .switch-track {
-  background: #000;
+  background: #3b82f6;
 }
 
 .switch-control input:checked + .switch-track::after {
@@ -2394,12 +2394,12 @@ onUnmounted(() => {
   font-family: 'JetBrains Mono', monospace;
   font-size: 24px;
   font-weight: 700;
-  color: #000;
+  color: #ffffff;
 }
 
 .val-unit {
   font-size: 12px;
-  color: #666;
+  color: #94a3b8;
   font-weight: 500;
 }
 
@@ -2435,7 +2435,7 @@ onUnmounted(() => {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #FFF;
+  background: #111111;
   border: 2px solid #000;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
@@ -2469,11 +2469,11 @@ onUnmounted(() => {
 }
 
 .mark-recommend:hover {
-  color: #000;
+  color: #ffffff;
 }
 
 .mark-recommend.active {
-  color: #000;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -2528,7 +2528,7 @@ onUnmounted(() => {
   font-size: 11px;
   font-weight: 500;
   color: #64748B;
-  background: #FFFFFF;
+  background: #111111;
   border: 1px solid #E2E8F0;
   padding: 3px 8px;
   border-radius: 6px;

@@ -4,7 +4,7 @@
 > Simulation to Discover AI Control
 > Protocol Blind Spots
 
-[![License](https://img.shields.io/badge/license-AGPL--3.0-blue)]()
+[![License](https://img.shields.io/badge/License-MIT-green)]()
 [![Research](https://img.shields.io/badge/type-AI_Safety_Research-green)]()
 [![Hackathon](https://img.shields.io/badge/Apart_Research-AI_Control_2026-orange)]()
 
@@ -74,10 +74,6 @@ Submitted to: Apart Research AI Control Hackathon 2026
 
 Title: "Swarm Red Teaming: Using Population Simulation to Discover AI Control Protocol Blind Spots"
 
-## Acknowledgements
-
-Built on open-source simulation infrastructure.
-
 ## License
 
-AGPL-3.0
+MIT

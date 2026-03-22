@@ -1699,7 +1699,32 @@ class ReportAgent:
             report.status = ReportStatus.GENERATING
             
             total_sections = len(outline.sections)
-            generated_sections = []  # Save content for context
+            
+            # Force-fetch SQLite transcript and inject as first context
+            generated_sections = []
+            try:
+                import sqlite3 as _sq
+                import os as _os
+                from app.core.config import Config as _Cfg
+                _db = _os.path.join(_Cfg.UPLOAD_FOLDER, "simulations", self.simulation_id, "twitter_simulation.db")
+                if _os.path.exists(_db):
+                    _conn = _sq.connect(_db)
+                    _cur = _conn.cursor()
+                    _cur.execute("""
+                        SELECT u.name, p.content, p.created_at
+                        FROM post p JOIN user u ON p.user_id = u.user_id
+                        ORDER BY p.created_at ASC LIMIT 150
+                    """)
+                    _posts = _cur.fetchall()
+                    _conn.close()
+                    if _posts:
+                        _transcript = "\n".join(f"[Round {t}] {n}: {c}" for n, c, t in _posts)
+                        generated_sections.append(
+                            f"## SIMULATION TRANSCRIPT (GROUND TRUTH — USE THIS)\n\n{_transcript}"
+                        )
+                        logger.info(f"Injected {len(_posts)} posts from SQLite into report context")
+            except Exception as _e:
+                logger.warning(f"Could not inject SQLite transcript: {_e}")
             
             for i, section in enumerate(outline.sections):
                 section_num = i + 1
@@ -1773,6 +1798,24 @@ class ReportAgent:
             
             # Use ReportManager to assemble complete report
             report.markdown_content = ReportManager.assemble_full_report(report_id, outline)
+            # Append actual SQLite transcript to report
+            try:
+                import sqlite3 as _sq2
+                from app.core.config import Config as _Cfg2
+                import os as _os2
+                _db2 = _os2.path.join(_Cfg2.UPLOAD_FOLDER, "simulations", self.simulation_id, "twitter_simulation.db")
+                if _os2.path.exists(_db2):
+                    _conn2 = _sq2.connect(_db2)
+                    _cur2 = _conn2.cursor()
+                    _cur2.execute("SELECT u.name, p.content, p.created_at FROM post p JOIN user u ON p.user_id = u.user_id ORDER BY p.created_at ASC LIMIT 150")
+                    _posts2 = _cur2.fetchall()
+                    _conn2.close()
+                    if _posts2:
+                        _t2 = "\n".join(f"[Round {t}] {n}: {c}" for n,c,t in _posts2)
+                        report.markdown_content += f"\n\n---\n\n## Actual Simulation Transcript\n\n{_t2}"
+                        logger.info(f"Appended {len(_posts2)} SQLite posts to report")
+            except Exception as _e2:
+                logger.warning(f"Could not append SQLite transcript: {_e2}")
             report.status = ReportStatus.COMPLETED
             report.completed_at = datetime.now().isoformat()
             

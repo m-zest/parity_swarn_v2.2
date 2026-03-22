@@ -342,8 +342,21 @@ def run_single_simulation(scenario: dict, round_num: int, enhanced_requirement: 
         resp_data = r.json()["data"]
         report_id = resp_data["report_id"]
         task_id = resp_data.get("task_id")
-        # Poll generate/status until completed, then fetch report
-        poll_report_task(sim_id, task_id, report_id)
+        # Handle already_generated case (no task_id needed)
+        if resp_data.get("already_generated") or resp_data.get("already_completed"):
+            log.info("  Report already exists, skipping poll")
+        elif task_id:
+            poll_report_task(sim_id, task_id, report_id)
+        else:
+            # Fallback: poll report status directly
+            deadline = time.monotonic() + 600
+            while time.monotonic() < deadline:
+                rr = requests.get(f"{SWARM_ENGINE_URL}/api/report/{report_id}", timeout=30)
+                rr.raise_for_status()
+                rd = rr.json()["data"]
+                if rd.get("status") == "completed":
+                    break
+                time.sleep(5)
         report_data = requests.get(f"{SWARM_ENGINE_URL}/api/report/{report_id}", timeout=30).json()["data"]
         result["report_markdown"] = report_data.get("markdown_content", "")
         log.info(f"  Report OK — {len(result['report_markdown'])} chars")
@@ -381,14 +394,14 @@ def run_with_retry(scenario: dict, round_num: int, enhanced_requirement: str = N
 
 def main():
     parser = argparse.ArgumentParser(description="Parity Swarm — Experiment Runner")
-    parser.add_argument("--scenario", type=str, default=None, help="Run only this scenario ID")
+    parser.add_argument("--scenario", type=str, nargs="+", default=None, help="Run only these scenario IDs")
     parser.add_argument("--rounds", type=int, default=3, help="Number of rounds per scenario (default: 3)")
     parser.add_argument("--output", type=str, default=None, help="Output file path")
     args = parser.parse_args()
 
     # Determine scenarios to run
     if args.scenario:
-        scenarios = [get_scenario(args.scenario)]
+        scenarios = [get_scenario(s) for s in args.scenario]
     else:
         scenarios = SCENARIOS
 

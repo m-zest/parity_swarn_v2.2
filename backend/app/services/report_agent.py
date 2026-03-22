@@ -1705,8 +1705,9 @@ class ReportAgent:
             try:
                 import sqlite3 as _sq
                 import os as _os
-                from app.core.config import Config as _Cfg
-                _db = _os.path.join(_Cfg.UPLOAD_FOLDER, "simulations", self.simulation_id, "twitter_simulation.db")
+                import os as _os_fix
+                _upload_fix = _os_fix.path.join(_os_fix.path.dirname(_os_fix.path.abspath(__file__)), "..", "..", "uploads")
+                _db = _os_fix.path.join(_upload_fix, "simulations", self.simulation_id, "twitter_simulation.db")
                 if _os.path.exists(_db):
                     _conn = _sq.connect(_db)
                     _cur = _conn.cursor()
@@ -1801,9 +1802,9 @@ class ReportAgent:
             # Append actual SQLite transcript to report
             try:
                 import sqlite3 as _sq2
-                from app.core.config import Config as _Cfg2
+                pass  # removed
                 import os as _os2
-                _db2 = _os2.path.join(_Cfg2.UPLOAD_FOLDER, "simulations", self.simulation_id, "twitter_simulation.db")
+                _db2 = _os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "..", "..", "uploads", "simulations", self.simulation_id, "twitter_simulation.db")
                 if _os2.path.exists(_db2):
                     _conn2 = _sq2.connect(_db2)
                     _cur2 = _conn2.cursor()

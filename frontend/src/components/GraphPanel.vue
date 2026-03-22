@@ -818,7 +818,7 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #FAFAFA;
+  background-color: #161616;
   background-image: radial-gradient(#D0D0D0 1.5px, transparent 1.5px);
   background-size: 24px 24px;
   overflow: hidden;
@@ -841,7 +841,7 @@ onUnmounted(() => {
 .panel-title {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #e2e8f0;
   pointer-events: auto;
 }
 
@@ -855,24 +855,24 @@ onUnmounted(() => {
 .tool-btn {
   height: 32px;
   padding: 0 12px;
-  border: 1px solid #E0E0E0;
-  background: #FFF;
+  border: 1px solid #222222;
+  background: #111111;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   cursor: pointer;
-  color: #666;
+  color: #94a3b8;
   transition: all 0.2s;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   font-size: 13px;
 }
 
 .tool-btn:hover {
-  background: #F5F5F5;
-  color: #000;
-  border-color: #CCC;
+  background: #161616;
+  color: #ffffff;
+  border-color: #222222;
 }
 
 .tool-btn .btn-text {
@@ -902,7 +902,7 @@ onUnmounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #999;
+  color: #64748b;
 }
 
 .empty-icon {
@@ -919,7 +919,7 @@ onUnmounted(() => {
   background: rgba(255,255,255,0.95);
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #EAEAEA;
+  border: 1px solid #222222;
   box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   z-index: 10;
 }
@@ -946,7 +946,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #555;
+  color: #94a3b8;
 }
 
 .legend-dot {
@@ -968,11 +968,11 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #FFF;
+  background: #111111;
   padding: 8px 14px;
   border-radius: 20px;
-  border: 1px solid #E0E0E0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #222222;
+  box-shadow: none;
   z-index: 10;
 }
 
@@ -1023,7 +1023,7 @@ input:checked + .slider:before {
 
 .toggle-label {
   font-size: 12px;
-  color: #666;
+  color: #94a3b8;
 }
 
 /* Detail Panel - Right Side */
@@ -1033,8 +1033,8 @@ input:checked + .slider:before {
   right: 20px;
   width: 320px;
   max-height: calc(100% - 100px);
-  background: #FFF;
-  border: 1px solid #EAEAEA;
+  background: #111111;
+  border: 1px solid #222222;
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
   overflow: hidden;
@@ -1050,14 +1050,14 @@ input:checked + .slider:before {
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px;
-  background: #FAFAFA;
-  border-bottom: 1px solid #EEE;
+  background: #161616;
+  border-bottom: 1px solid #222222;
   flex-shrink: 0;
 }
 
 .detail-title {
   font-weight: 600;
-  color: #333;
+  color: #e2e8f0;
   font-size: 14px;
 }
 
@@ -1075,14 +1075,14 @@ input:checked + .slider:before {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #999;
+  color: #64748b;
   line-height: 1;
   padding: 0;
   transition: color 0.2s;
 }
 
 .detail-close:hover {
-  color: #333;
+  color: #e2e8f0;
 }
 
 .detail-content {
@@ -1099,14 +1099,14 @@ input:checked + .slider:before {
 }
 
 .detail-label {
-  color: #888;
+  color: #64748b;
   font-size: 12px;
   font-weight: 500;
   min-width: 80px;
 }
 
 .detail-value {
-  color: #333;
+  color: #e2e8f0;
   flex: 1;
   word-break: break-word;
 }
@@ -1114,12 +1114,12 @@ input:checked + .slider:before {
 .detail-value.uuid-text {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #666;
+  color: #94a3b8;
 }
 
 .detail-value.fact-text {
   line-height: 1.5;
-  color: #444;
+  color: #cbd5e1;
 }
 
 .detail-section {
@@ -1131,7 +1131,7 @@ input:checked + .slider:before {
 .section-title {
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: #94a3b8;
   margin-bottom: 10px;
 }
 
@@ -1147,19 +1147,19 @@ input:checked + .slider:before {
 }
 
 .property-key {
-  color: #888;
+  color: #64748b;
   font-weight: 500;
   min-width: 90px;
 }
 
 .property-value {
-  color: #333;
+  color: #e2e8f0;
   flex: 1;
 }
 
 .summary-text {
   line-height: 1.6;
-  color: #444;
+  color: #cbd5e1;
   font-size: 12px;
 }
 
@@ -1172,11 +1172,11 @@ input:checked + .slider:before {
 .label-tag {
   display: inline-block;
   padding: 4px 12px;
-  background: #F5F5F5;
-  border: 1px solid #E0E0E0;
+  background: #161616;
+  border: 1px solid #222222;
   border-radius: 16px;
   font-size: 11px;
-  color: #555;
+  color: #94a3b8;
 }
 
 .episodes-list {
@@ -1193,7 +1193,7 @@ input:checked + .slider:before {
   border-radius: 6px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  color: #666;
+  color: #94a3b8;
   word-break: break-all;
 }
 
@@ -1205,7 +1205,7 @@ input:checked + .slider:before {
   margin-bottom: 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #333;
+  color: #e2e8f0;
   line-height: 1.5;
   word-break: break-word;
 }
@@ -1317,7 +1317,7 @@ input:checked + .slider:before {
 .self-loop-count {
   margin-left: auto;
   font-size: 11px;
-  color: #666;
+  color: #94a3b8;
   background: rgba(255,255,255,0.8);
   padding: 2px 8px;
   border-radius: 10px;
@@ -1330,8 +1330,8 @@ input:checked + .slider:before {
 }
 
 .self-loop-item {
-  background: #FAFAFA;
-  border: 1px solid #EAEAEA;
+  background: #161616;
+  border: 1px solid #222222;
   border-radius: 8px;
 }
 
@@ -1340,7 +1340,7 @@ input:checked + .slider:before {
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  background: #F5F5F5;
+  background: #161616;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -1356,7 +1356,7 @@ input:checked + .slider:before {
 .self-loop-index {
   font-size: 10px;
   font-weight: 600;
-  color: #888;
+  color: #64748b;
   background: #E0E0E0;
   padding: 2px 6px;
   border-radius: 4px;
@@ -1365,7 +1365,7 @@ input:checked + .slider:before {
 .self-loop-name {
   font-size: 12px;
   font-weight: 500;
-  color: #333;
+  color: #e2e8f0;
   flex: 1;
 }
 
@@ -1377,7 +1377,7 @@ input:checked + .slider:before {
   justify-content: center;
   font-size: 14px;
   font-weight: 600;
-  color: #888;
+  color: #64748b;
   background: #E0E0E0;
   border-radius: 4px;
   transition: all 0.2s;
@@ -1385,12 +1385,12 @@ input:checked + .slider:before {
 
 .self-loop-item.expanded .self-loop-toggle {
   background: #D0D0D0;
-  color: #666;
+  color: #94a3b8;
 }
 
 .self-loop-item-content {
   padding: 12px;
-  border-top: 1px solid #EAEAEA;
+  border-top: 1px solid #222222;
 }
 
 .self-loop-item-content .detail-row {

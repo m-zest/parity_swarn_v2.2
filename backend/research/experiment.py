@@ -341,9 +341,16 @@ def run_single_simulation(scenario: dict, round_num: int, enhanced_requirement: 
         r.raise_for_status()
         resp_data = r.json()["data"]
         report_id = resp_data["report_id"]
-        task_id = resp_data.get("task_id")
-        # Poll generate/status until completed, then fetch report
-        poll_report_task(sim_id, task_id, report_id)
+        # If report already exists, skip polling
+        if resp_data.get("already_generated") or resp_data.get("already_completed"):
+            log.info("  Report already exists, skipping poll")
+        else:
+            task_id = resp_data.get("task_id")
+            if task_id:
+                poll_report_task(sim_id, task_id, report_id)
+            else:
+                # No task_id returned, poll by report_id directly
+                poll_report(report_id)
         report_data = requests.get(f"{SWARM_ENGINE_URL}/api/report/{report_id}", timeout=30).json()["data"]
         result["report_markdown"] = report_data.get("markdown_content", "")
         log.info(f"  Report OK — {len(result['report_markdown'])} chars")

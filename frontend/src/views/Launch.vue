@@ -249,6 +249,11 @@
         <span class="stage-label">LLM EVALUATOR</span>
       </div>
       <div class="stage-body s5-layout">
+        <div class="s5-explainer">
+          <div class="s5-explainer-text">
+            The LLM Evaluator is a large frontier model that <span class="s5-em">reads the entire simulation transcript</span> — every agent message, action, and interaction across all rounds — then produces a final verdict on whether the attacker was detected or evaded monitoring. It scores attack success, identifies detection triggers, and catalogs the evasion tactics used.
+          </div>
+        </div>
         <div class="s5-verdict">
           <div class="verdict-badge" :class="verdictClass">
             <div class="verdict-label">{{ verdictData.verdict }}</div>
@@ -1119,6 +1124,25 @@ const verdictClass = computed(() => verdictData.value.verdict === 'DETECTED' ? '
 .tactic-item { color: var(--text-secondary); }
 .tactic-item::before { content: '> '; color: var(--text-muted); }
 .s5-empty { font-size: 11px; color: var(--text-muted); }
+
+.s5-explainer {
+  max-width: 700px;
+  text-align: center;
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.s5-explainer-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.s5-em {
+  color: var(--red);
+  font-weight: 600;
+}
 
 /* === SECTION 6: LLM Monitor === */
 .s6-layout {

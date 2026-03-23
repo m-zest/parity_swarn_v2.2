@@ -50,9 +50,10 @@
 <script setup>
 const navItems = [
   { to: '/', label: 'DASHBOARD', key: '01' },
-  { to: '/launch', label: 'LAUNCH', key: '02' },
+  { to: '/launch', label: 'LAUNCH SWARM', key: '02' },
   { to: '/results', label: 'RESULTS', key: '03' },
   { to: '/terminal', label: 'TERMINAL', key: '04' },
+  { to: '/history', label: 'HISTORY', key: '05' },
 ]
 </script>
 

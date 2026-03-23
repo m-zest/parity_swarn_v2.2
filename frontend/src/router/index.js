@@ -4,6 +4,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Launch from '../views/Launch.vue'
 import Results from '../views/Results.vue'
 import Terminal from '../views/Terminal.vue'
+import History from '../views/History.vue'
 import Process from '../views/MainView.vue'
 import SimulationView from '../views/SimulationView.vue'
 import SimulationRunView from '../views/SimulationRunView.vue'
@@ -19,6 +20,7 @@ const routes = [
       { path: 'launch', name: 'Launch', component: Launch },
       { path: 'results', name: 'Results', component: Results },
       { path: 'terminal', name: 'Terminal', component: Terminal },
+      { path: 'history', name: 'History', component: History },
     ]
   },
   {

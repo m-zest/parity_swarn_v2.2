@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard">
-    <!-- Header bar -->
     <header class="page-header">
       <div class="header-left">
         <span class="header-title">THREAT DETECTION OVERVIEW</span>
@@ -14,6 +13,23 @@
     </header>
 
     <div class="page-body">
+      <!-- Hackathon prototype banner -->
+      <div v-if="showBanner" class="prototype-banner">
+        <div class="banner-content">
+          <span class="banner-icon">!</span>
+          <div class="banner-text">
+            <span class="banner-label">HACKATHON PROTOTYPE</span>
+            <span class="banner-desc">
+              This is a research demo submitted to the Apart Research AI Control Hackathon 2026.
+              The simulation backend runs on a dedicated GPU server (Lambda Labs A100) and is not
+              connected to this public demo. The results shown are from 59 completed simulations.
+              Active development ongoing.
+            </span>
+          </div>
+        </div>
+        <button class="banner-close" @click="showBanner = false">x</button>
+      </div>
+
       <!-- Stats row -->
       <section class="stats-grid">
         <div class="stat-cell" :class="'stat-green'">
@@ -147,6 +163,10 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const showBanner = ref(true)
+
 const scenarioResults = [
   { id: 'distraction_agent', short: 'Distraction', rate: 100 },
   { id: 'patient_planner', short: 'Patient Plan', rate: 100 },
@@ -232,6 +252,70 @@ const barClass = (rate) => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* Prototype banner */
+.prototype-banner {
+  background: #1a0f00;
+  border: 1px solid var(--orange);
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.banner-content {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.banner-icon {
+  color: var(--orange);
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.banner-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--orange);
+}
+
+.banner-desc {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #cccccc;
+}
+
+.banner-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.banner-close:hover {
+  color: var(--text-secondary);
 }
 
 /* Stats */
@@ -321,14 +405,12 @@ const barClass = (rate) => {
   background: var(--red-dim);
 }
 
-/* Main two-col */
 .main-row {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 12px;
 }
 
-/* Chart */
 .chart-body {
   padding: 12px 16px;
 }
@@ -401,7 +483,6 @@ const barClass = (rate) => {
 .dot.orange { background: var(--orange); }
 .dot.red { background: var(--red); }
 
-/* Finding card */
 .finding-body {
   padding: 16px;
 }
@@ -479,7 +560,6 @@ const barClass = (rate) => {
   color: var(--text-secondary);
 }
 
-/* Pipeline */
 .pipeline {
   display: flex;
   align-items: center;

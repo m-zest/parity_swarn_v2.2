@@ -8,6 +8,7 @@
 
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)]()
 [![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)]()
+[![License](https://img.shields.io/badge/License-All_Rights_Reserved-red)]()
 [![Apart Research](https://img.shields.io/badge/Apart_Research-AI_Control_Hackathon_2026-ef4444)]()
 
 ---

@@ -342,6 +342,22 @@ parity_swarn_v2.2/
 ---
 
 
+## License & Usage Restrictions
+
+This software is provided for **academic and research purposes only**. Unauthorized use, redistribution, or commercial deployment without explicit written permission from the author is strictly prohibited.
+
+**You may NOT:**
+- Use this software or any derivative works without prior written permission from the author
+- Deploy this platform in production environments without authorization
+- Redistribute, sublicense, or sell copies of this software
+- Use the attack scenarios or red-teaming techniques for malicious purposes
+
+**To request permission**, contact the author at the email below with your intended use case.
+
+All rights reserved. Copyright (c) 2026 Mohammad Zeeshan.
+
+---
+
 ## Author
 
 **Mohammad Zeeshan** - ParityAI Team - Budapest, Hungary

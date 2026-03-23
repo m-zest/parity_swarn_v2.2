@@ -9,20 +9,6 @@
         </div>
       </div>
 
-      <div class="header-center">
-        <div class="view-switcher">
-          <button
-            v-for="mode in ['graph', 'split', 'workbench']"
-            :key="mode"
-            class="switch-btn"
-            :class="{ active: viewMode === mode }"
-            @click="viewMode = mode"
-          >
-            {{ { graph: 'Graph', split: 'Split', workbench: 'Workbench' }[mode] }}
-          </button>
-        </div>
-      </div>
-
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step {{ currentStep }}/5</span>
@@ -37,17 +23,16 @@
 
     <!-- Main Content Area -->
     <main class="content-area">
-      <div class="panel-wrapper left" :style="leftPanelStyle">
+      <div class="panel-wrapper left" style="width: 40%">
         <GraphPanel
           :graphData="graphData"
           :loading="graphLoading"
           :currentPhase="currentPhase"
           @refresh="refreshGraph"
-          @toggle-maximize="toggleMaximize('graph')"
         />
       </div>
 
-      <div class="panel-wrapper right" :style="rightPanelStyle">
+      <div class="panel-wrapper right" style="width: 60%">
         <Step1GraphBuild
           v-if="currentStep === 1"
           :currentPhase="currentPhase"
@@ -84,7 +69,6 @@ import { getPendingUpload, clearPendingUpload } from '../store/pendingUpload'
 const route = useRoute()
 const router = useRouter()
 
-const viewMode = ref('split')
 const currentStep = ref(1)
 const stepNames = ['Graph Building', 'Environment Setup', 'Run Simulation', 'Report Generation', 'Deep Interaction']
 
@@ -101,18 +85,6 @@ const systemLogs = ref([])
 
 let pollTimer = null
 let graphPollTimer = null
-
-const leftPanelStyle = computed(() => {
-  if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
-  return { width: '50%', opacity: 1, transform: 'translateX(0)' }
-})
-
-const rightPanelStyle = computed(() => {
-  if (viewMode.value === 'workbench') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'graph') return { width: '0%', opacity: 0, transform: 'translateX(20px)' }
-  return { width: '50%', opacity: 1, transform: 'translateX(0)' }
-})
 
 const statusClass = computed(() => {
   if (error.value) return 'error'
@@ -132,10 +104,6 @@ const addLog = (msg) => {
   const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
   if (systemLogs.value.length > 100) systemLogs.value.shift()
-}
-
-const toggleMaximize = (target) => {
-  viewMode.value = viewMode.value === target ? 'split' : target
 }
 
 const handleNextStep = (params = {}) => {
@@ -364,12 +332,6 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
   position: relative;
 }
 
-.header-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 .brand {
   font-size: 11px;
   font-weight: 700;
@@ -384,31 +346,6 @@ onUnmounted(() => { stopPolling(); stopGraphPolling() })
 .brand-diamond {
   color: var(--red);
   font-size: 14px;
-}
-
-.view-switcher {
-  display: flex;
-  background: var(--bg-base);
-  padding: 2px;
-  gap: 2px;
-  border: 1px solid var(--border);
-}
-
-.switch-btn {
-  border: none;
-  background: transparent;
-  padding: 4px 14px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.5px;
-}
-
-.switch-btn.active {
-  background: var(--bg-elevated);
-  color: var(--text-primary);
 }
 
 .header-right {

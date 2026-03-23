@@ -7,19 +7,6 @@
           PARITY SWARM
         </div>
       </div>
-      <div class="header-center">
-        <div class="view-switcher">
-          <button
-            v-for="mode in ['graph', 'split', 'workbench']"
-            :key="mode"
-            class="switch-btn"
-            :class="{ active: viewMode === mode }"
-            @click="viewMode = mode"
-          >
-            {{ { graph: 'Graph', split: 'Split', workbench: 'Workbench' }[mode] }}
-          </button>
-        </div>
-      </div>
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step 5/5</span>
@@ -33,17 +20,7 @@
     </header>
 
     <main class="content-area">
-      <div class="panel-wrapper left" :style="leftPanelStyle">
-        <GraphPanel
-          :graphData="graphData"
-          :loading="graphLoading"
-          :currentPhase="5"
-          :isSimulating="false"
-          @refresh="refreshGraph"
-          @toggle-maximize="toggleMaximize('graph')"
-        />
-      </div>
-      <div class="panel-wrapper right" :style="rightPanelStyle">
+      <div class="panel-wrapper full">
         <Step5Interaction
           :reportId="currentReportId"
           :simulationId="simulationId"
@@ -59,9 +36,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import GraphPanel from '../components/GraphPanel.vue'
 import Step5Interaction from '../components/Step5Interaction.vue'
-import { getProject, getGraphData } from '../api/graph'
+import { getProject } from '../api/graph'
 import { getSimulation } from '../api/simulation'
 import { getReport } from '../api/report'
 
@@ -69,26 +45,11 @@ const route = useRoute()
 const router = useRouter()
 const props = defineProps({ reportId: String })
 
-const viewMode = ref('workbench')
 const currentReportId = ref(route.params.reportId)
 const simulationId = ref(null)
 const projectData = ref(null)
-const graphData = ref(null)
-const graphLoading = ref(false)
 const systemLogs = ref([])
 const currentStatus = ref('ready')
-
-const leftPanelStyle = computed(() => {
-  if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
-  return { width: '50%', opacity: 1, transform: 'translateX(0)' }
-})
-
-const rightPanelStyle = computed(() => {
-  if (viewMode.value === 'workbench') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'graph') return { width: '0%', opacity: 0, transform: 'translateX(20px)' }
-  return { width: '50%', opacity: 1, transform: 'translateX(0)' }
-})
 
 const statusClass = computed(() => currentStatus.value)
 const statusText = computed(() => {
@@ -105,7 +66,6 @@ const addLog = (msg) => {
 }
 
 const updateStatus = (status) => { currentStatus.value = status }
-const toggleMaximize = (target) => { viewMode.value = viewMode.value === target ? 'split' : target }
 
 const loadReportData = async () => {
   try {
@@ -120,24 +80,12 @@ const loadReportData = async () => {
           if (projRes.success && projRes.data) {
             projectData.value = projRes.data
             addLog(`Project loaded: ${projRes.data.project_id}`)
-            if (projRes.data.graph_id) await loadGraph(projRes.data.graph_id)
           }
         }
       }
     } else addLog(`Failed to get report: ${reportRes.error || 'Unknown'}`)
   } catch (err) { addLog(`Load error: ${err.message}`) }
 }
-
-const loadGraph = async (graphId) => {
-  graphLoading.value = true
-  try {
-    const res = await getGraphData(graphId)
-    if (res.success) { graphData.value = res.data; addLog('Graph data loaded') }
-  } catch (err) { addLog(`Graph load failed: ${err.message}`) }
-  finally { graphLoading.value = false }
-}
-
-const refreshGraph = () => { if (projectData.value?.graph_id) loadGraph(projectData.value.graph_id) }
 
 watch(() => route.params.reportId, (newId) => {
   if (newId && newId !== currentReportId.value) { currentReportId.value = newId; loadReportData() }
@@ -164,10 +112,7 @@ onMounted(() => { addLog('InteractionView initialized'); loadReportData() })
   padding: 0 24px;
   background: var(--bg-card);
   z-index: 100;
-  position: relative;
 }
-
-.header-center { position: absolute; left: 50%; transform: translateX(-50%); }
 
 .brand {
   font-size: 11px;
@@ -181,28 +126,6 @@ onMounted(() => { addLog('InteractionView initialized'); loadReportData() })
 }
 
 .brand-diamond { color: var(--red); font-size: 14px; }
-
-.view-switcher {
-  display: flex;
-  background: var(--bg-base);
-  padding: 2px;
-  gap: 2px;
-  border: 1px solid var(--border);
-}
-
-.switch-btn {
-  border: none;
-  background: transparent;
-  padding: 4px 14px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.5px;
-}
-
-.switch-btn.active { background: var(--bg-elevated); color: var(--text-primary); }
 
 .header-right { display: flex; align-items: center; gap: 16px; }
 .workflow-step { display: flex; align-items: center; gap: 8px; font-size: 11px; }
@@ -218,14 +141,11 @@ onMounted(() => { addLog('InteractionView initialized'); loadReportData() })
 
 @keyframes pulse { 50% { opacity: 0.4; } }
 
-.content-area { flex: 1; display: flex; position: relative; overflow: hidden; }
+.content-area { flex: 1; display: flex; overflow: hidden; }
 
-.panel-wrapper {
+.panel-wrapper.full {
+  width: 100%;
   height: 100%;
   overflow: hidden;
-  transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, transform 0.3s ease;
-  will-change: width, opacity, transform;
 }
-
-.panel-wrapper.left { border-right: 1px solid var(--border); }
 </style>

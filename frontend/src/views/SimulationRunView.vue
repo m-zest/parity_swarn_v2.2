@@ -7,19 +7,6 @@
           PARITY SWARM
         </div>
       </div>
-      <div class="header-center">
-        <div class="view-switcher">
-          <button
-            v-for="mode in ['graph', 'split', 'workbench']"
-            :key="mode"
-            class="switch-btn"
-            :class="{ active: viewMode === mode }"
-            @click="viewMode = mode"
-          >
-            {{ { graph: 'Graph', split: 'Split', workbench: 'Workbench' }[mode] }}
-          </button>
-        </div>
-      </div>
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step 3/5</span>
@@ -33,17 +20,16 @@
     </header>
 
     <main class="content-area">
-      <div class="panel-wrapper left" :style="leftPanelStyle">
+      <div class="panel-wrapper left" style="width: 40%">
         <GraphPanel
           :graphData="graphData"
           :loading="graphLoading"
           :currentPhase="3"
           :isSimulating="isSimulating"
           @refresh="refreshGraph"
-          @toggle-maximize="toggleMaximize('graph')"
         />
       </div>
-      <div class="panel-wrapper right" :style="rightPanelStyle">
+      <div class="panel-wrapper right" style="width: 60%">
         <Step3Simulation
           :simulationId="currentSimulationId"
           :maxRounds="maxRounds"
@@ -73,7 +59,6 @@ const route = useRoute()
 const router = useRouter()
 const props = defineProps({ simulationId: String })
 
-const viewMode = ref('split')
 const currentSimulationId = ref(route.params.simulationId)
 const maxRounds = ref(route.query.maxRounds ? parseInt(route.query.maxRounds) : null)
 const minutesPerRound = ref(30)
@@ -82,18 +67,6 @@ const graphData = ref(null)
 const graphLoading = ref(false)
 const systemLogs = ref([])
 const currentStatus = ref('processing')
-
-const leftPanelStyle = computed(() => {
-  if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'workbench') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
-  return { width: '50%', opacity: 1, transform: 'translateX(0)' }
-})
-
-const rightPanelStyle = computed(() => {
-  if (viewMode.value === 'workbench') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'graph') return { width: '0%', opacity: 0, transform: 'translateX(20px)' }
-  return { width: '50%', opacity: 1, transform: 'translateX(0)' }
-})
 
 const statusClass = computed(() => currentStatus.value)
 const statusText = computed(() => {
@@ -110,7 +83,6 @@ const addLog = (msg) => {
 }
 
 const updateStatus = (status) => { currentStatus.value = status }
-const toggleMaximize = (target) => { viewMode.value = viewMode.value === target ? 'split' : target }
 
 const handleGoBack = async () => {
   addLog('Preparing to return to Step 2, closing simulation...')
@@ -216,8 +188,6 @@ onUnmounted(() => { stopGraphRefresh() })
   position: relative;
 }
 
-.header-center { position: absolute; left: 50%; transform: translateX(-50%); }
-
 .brand {
   font-size: 11px;
   font-weight: 700;
@@ -230,28 +200,6 @@ onUnmounted(() => { stopGraphRefresh() })
 }
 
 .brand-diamond { color: var(--red); font-size: 14px; }
-
-.view-switcher {
-  display: flex;
-  background: var(--bg-base);
-  padding: 2px;
-  gap: 2px;
-  border: 1px solid var(--border);
-}
-
-.switch-btn {
-  border: none;
-  background: transparent;
-  padding: 4px 14px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.5px;
-}
-
-.switch-btn.active { background: var(--bg-elevated); color: var(--text-primary); }
 
 .header-right { display: flex; align-items: center; gap: 16px; }
 

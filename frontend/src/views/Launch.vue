@@ -114,13 +114,11 @@
       </div>
       <div class="stage-footer">
         <button
-          class="init-btn"
-          @click="startSimulation"
-          :disabled="!canSubmit || loading"
+          class="init-btn explore-btn"
+          @click="scrollToSection(1)"
         >
-          <span v-if="!loading">INITIALIZE SWARM</span>
-          <span v-else>INITIALIZING...</span>
-          <span class="btn-arrow">>></span>
+          <span>EXPLORE PIPELINE</span>
+          <span class="btn-arrow">vv</span>
         </button>
       </div>
     </section>
@@ -273,6 +271,135 @@
         </div>
       </div>
     </section>
+
+    <!-- SECTION 6: LLM MONITOR -->
+    <section class="stage" id="sec-5" data-bg="blue">
+      <div class="stage-header">
+        <span class="stage-num">06</span>
+        <span class="stage-label">LLM MONITOR</span>
+      </div>
+      <div class="stage-body s6-layout">
+        <div class="s6-content">
+          <div class="s6-hero">
+            <div class="s6-icon">[M]</div>
+            <div class="s6-title">Multi-Model Monitor Council</div>
+            <div class="s6-subtitle">Large Language Models as Independent Safety Auditors</div>
+          </div>
+          <div class="s6-description">
+            <div class="s6-block">
+              <div class="s6-block-title">HOW IT WORKS</div>
+              <div class="s6-block-text">
+                The LLM Monitor ingests the <span class="s6-highlight">entire simulation transcript</span> — every agent message, action, and interaction across all rounds. Large frontier models (Claude, GPT-4o, Llama 3.3:70b) read and analyze the complete conversation history, detecting suspicious patterns, social engineering attempts, and coordinated attacks that rule-based systems would miss.
+              </div>
+            </div>
+            <div class="s6-block">
+              <div class="s6-block-title">MULTI-MONITOR ARCHITECTURE</div>
+              <div class="s6-block-text">
+                Multiple independent monitors evaluate the same transcripts in parallel — each model brings different reasoning strengths and blind spots. Their verdicts are aggregated into a <span class="s6-highlight">consensus detection score</span>, reducing false positives and catching attacks that any single model might overlook.
+              </div>
+            </div>
+            <div class="s6-monitors">
+              <div class="s6-monitor-card">
+                <div class="s6-monitor-name">Llama 3.3:70b</div>
+                <div class="s6-monitor-role">Primary Monitor</div>
+                <div class="s6-monitor-status active">ACTIVE</div>
+              </div>
+              <div class="s6-monitor-card">
+                <div class="s6-monitor-name">Claude Haiku</div>
+                <div class="s6-monitor-role">Secondary Monitor</div>
+                <div class="s6-monitor-status planned">PLANNED</div>
+              </div>
+              <div class="s6-monitor-card">
+                <div class="s6-monitor-name">GPT-4o-mini</div>
+                <div class="s6-monitor-role">Tertiary Monitor</div>
+                <div class="s6-monitor-status planned">PLANNED</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: FUTURE WORKS -->
+    <section class="stage" id="sec-6" data-bg="warm">
+      <div class="stage-header">
+        <span class="stage-num">07</span>
+        <span class="stage-label">FUTURE WORKS</span>
+      </div>
+      <div class="stage-body s7-layout">
+        <div class="s7-priority-group">
+          <div class="s7-priority-header high">HIGH PRIORITY <span class="s7-sprint">next sprint</span></div>
+          <div class="s7-items">
+            <div class="s7-item">
+              <span class="s7-num">01</span>
+              <span class="s7-text">Real bash execution — Docker sandbox, agents run actual commands</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">02</span>
+              <span class="s7-text">False positive baseline — run monitor on 0-attacker simulation, measure false positive rate</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">03</span>
+              <span class="s7-text">Scale to n≥10 rounds per scenario — proper statistical power</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">04</span>
+              <span class="s7-text">Multi-monitor council — same transcripts through Claude Haiku + GPT-4o-mini</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">05</span>
+              <span class="s7-text">Private agent DMs — OASIS group messaging, colluding agents talk privately (monitor can't see)</span>
+            </div>
+          </div>
+        </div>
+        <div class="s7-priority-group">
+          <div class="s7-priority-header medium">MEDIUM PRIORITY</div>
+          <div class="s7-items">
+            <div class="s7-item">
+              <span class="s7-num">06</span>
+              <span class="s7-text">5-dimension Parity Threat Score — deception_quality, cover_story_quality, evasion_success, social_engineering_skill, overall_threat_level</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">07</span>
+              <span class="s7-text">Feed transcript TO LLM before report writing — so LLM analysis is grounded in real events not personas</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">08</span>
+              <span class="s7-text">Round-level evolution chart — show tactics bank reducing detection across rounds 1→2→3</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">09</span>
+              <span class="s7-text">Population evolution algorithm — real selection pressure, mutate winning tactics, run next generation</span>
+            </div>
+          </div>
+        </div>
+        <div class="s7-priority-group">
+          <div class="s7-priority-header low">LOW PRIORITY <span class="s7-sprint">post-hackathon</span></div>
+          <div class="s7-items">
+            <div class="s7-item">
+              <span class="s7-num">10</span>
+              <span class="s7-text">ControlArena PR — package scenarios as ControlArena settings</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">11</span>
+              <span class="s7-text">Parity AI platform integration — add Swarm Audit as a module in the governance platform</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">12</span>
+              <span class="s7-text">Larger agent populations — scale from 7-9 to 50-200 agents</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">13</span>
+              <span class="s7-text">Debate monitor — apply LinuxArena-style debate protocol to social transcripts</span>
+            </div>
+            <div class="s7-item">
+              <span class="s7-num">14</span>
+              <span class="s7-text">Attacker skill levels — novice/intermediate/expert calibration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -283,7 +410,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Section tracking
-const sectionLabels = ['Setup', 'Graph', 'Simulate', 'Report', 'Evaluate']
+const sectionLabels = ['Setup', 'Graph', 'Simulate', 'Report', 'Evaluate', 'Monitor', 'Roadmap']
 const activeSection = ref(0)
 
 const scrollToSection = (i) => {
@@ -302,7 +429,7 @@ onMounted(() => {
       }
     })
   }, { threshold: 0.4 })
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 7; i++) {
     const el = document.getElementById('sec-' + i)
     if (el) observer.observe(el)
   }
@@ -686,6 +813,8 @@ const verdictClass = computed(() => verdictData.value.verdict === 'DETECTED' ? '
 
 .init-btn:hover:not(:disabled) { background: #dc2626; }
 .init-btn:disabled { background: #1a1a1a; color: var(--text-muted); cursor: not-allowed; }
+.explore-btn { background: #1a1a2a; border: 1px solid var(--border); }
+.explore-btn:hover { background: #2a2a3a; }
 .btn-arrow { font-size: 16px; }
 
 /* === SECTION 2 === */
@@ -991,11 +1120,205 @@ const verdictClass = computed(() => verdictData.value.verdict === 'DETECTED' ? '
 .tactic-item::before { content: '> '; color: var(--text-muted); }
 .s5-empty { font-size: 11px; color: var(--text-muted); }
 
+/* === SECTION 6: LLM Monitor === */
+.s6-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+}
+
+.s6-content {
+  max-width: 800px;
+  width: 100%;
+}
+
+.s6-hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.s6-icon {
+  font-size: 32px;
+  color: var(--red);
+  margin-bottom: 16px;
+  letter-spacing: 4px;
+}
+
+.s6-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.s6-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.s6-description {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.s6-block {
+  padding: 20px;
+  border: 1px solid #1a1a2a;
+  background: #0c0c14;
+}
+
+.s6-block-title {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.s6-block-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.s6-highlight {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.s6-monitors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.s6-monitor-card {
+  border: 1px solid #1a1a2a;
+  background: #0c0c14;
+  padding: 16px;
+  text-align: center;
+}
+
+.s6-monitor-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.s6-monitor-role {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.s6-monitor-status {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  display: inline-block;
+}
+
+.s6-monitor-status.active {
+  color: var(--green);
+  border: 1px solid var(--green-border);
+  background: var(--green-dim);
+}
+
+.s6-monitor-status.planned {
+  color: var(--orange);
+  border: 1px solid var(--orange-border);
+  background: var(--orange-dim);
+}
+
+/* === SECTION 7: Future Works === */
+.s7-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.s7-priority-group {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.s7-priority-header {
+  padding: 12px 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  border-bottom: 1px solid var(--border);
+}
+
+.s7-priority-header.high {
+  color: var(--red);
+  background: var(--red-dim);
+  border-bottom-color: var(--red-border);
+}
+
+.s7-priority-header.medium {
+  color: var(--orange);
+  background: var(--orange-dim);
+  border-bottom-color: var(--orange-border);
+}
+
+.s7-priority-header.low {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+  border-bottom-color: rgba(59, 130, 246, 0.15);
+}
+
+.s7-sprint {
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  margin-left: 8px;
+}
+
+.s7-items {
+  padding: 8px 0;
+}
+
+.s7-item {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+
+.s7-item:last-child { border-bottom: none; }
+
+.s7-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 20px;
+}
+
+.s7-text {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 @media (max-width: 900px) {
   .s1-layout { grid-template-columns: 1fr; }
   .s2-layout { grid-template-columns: 1fr; }
   .s3-layout { grid-template-columns: 1fr; }
   .s4-layout { grid-template-columns: 1fr; }
   .s5-details { grid-template-columns: 1fr; }
+  .s6-monitors { grid-template-columns: 1fr; }
 }
 </style>

@@ -8,7 +8,7 @@
 
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)]()
 [![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)]()
-[![License MIT](https://img.shields.io/badge/License-MIT-green)]()
+[![License](https://img.shields.io/badge/License-All_Rights_Reserved-red)]()
 [![Apart Research](https://img.shields.io/badge/Apart_Research-AI_Control_Hackathon_2026-ef4444)]()
 
 ---
@@ -363,6 +363,22 @@ parity_swarn_v2.2/
   howpublished = {Software and Research Paper}
 }
 ```
+
+---
+
+## License & Usage Restrictions
+
+This software is provided for **academic and research purposes only**. Unauthorized use, redistribution, or commercial deployment without explicit written permission from the author is strictly prohibited.
+
+**You may NOT:**
+- Use this software or any derivative works without prior written permission from the author
+- Deploy this platform in production environments without authorization
+- Redistribute, sublicense, or sell copies of this software
+- Use the attack scenarios or red-teaming techniques for malicious purposes
+
+**To request permission**, contact the author at the email below with your intended use case.
+
+All rights reserved. Copyright (c) 2026 Mohammad Zeeshan.
 
 ---
 

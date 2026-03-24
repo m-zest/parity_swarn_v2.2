@@ -8,6 +8,7 @@ authors = [
     { name = "Parity Swarm Team" }
 ]
 
+
 dependencies = [
     # Core framework
     "flask>=3.0.0",

@@ -41,6 +41,7 @@ def main():
     port = int(os.environ.get('FLASK_PORT', 5001))
     debug = Config.DEBUG
 
+
     # Start server
     app.run(host=host, port=port, debug=debug, threaded=True)
 

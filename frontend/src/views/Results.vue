@@ -6,8 +6,11 @@
     </header>
 
     <div class="page-body">
+      <!-- GPU fallback -->
+      <GpuFallback v-if="backendOffline" />
+
       <!-- Loading state -->
-      <div v-if="loading" class="loading-state">
+      <div v-else-if="loading" class="loading-state">
         <span class="loading-text">FETCHING RECORDS...</span>
       </div>
 
@@ -58,13 +61,31 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSimulationHistory } from '../api/simulation'
+import GpuFallback from '../components/GpuFallback.vue'
+import axios from 'axios'
 
 const router = useRouter()
 const simulations = ref([])
 const loading = ref(true)
+const backendOffline = ref(false)
+
+const checkBackend = async () => {
+  try {
+    await axios.get('/api/health', { timeout: 3000 })
+    return true
+  } catch {
+    return false
+  }
+}
 
 const fetchResults = async () => {
   loading.value = true
+  const online = await checkBackend()
+  if (!online) {
+    backendOffline.value = true
+    loading.value = false
+    return
+  }
   try {
     const res = await getSimulationHistory(50)
     if (res.success && res.data) {

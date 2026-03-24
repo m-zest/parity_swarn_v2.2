@@ -14,7 +14,9 @@
       </div>
     </header>
 
-    <div class="terminal-body" ref="terminalBody">
+    <GpuFallback v-if="backendOffline" />
+
+    <div v-else class="terminal-body" ref="terminalBody">
       <div class="terminal-content">
         <div v-for="(line, i) in logs" :key="i" class="log-line">
           <span class="line-num">{{ String(i + 1).padStart(4, '0') }}</span>
@@ -35,9 +37,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import GpuFallback from '../components/GpuFallback.vue'
 
 const logs = ref([])
 const terminalBody = ref(null)
+const backendOffline = ref(false)
 let pollTimer = null
 
 const addLog = (msg, type = 'info') => {
@@ -73,7 +77,13 @@ const fetchLogs = async () => {
   } catch (e) { /* backend offline */ }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    await fetch('/api/health', { signal: AbortSignal.timeout(3000) })
+  } catch {
+    backendOffline.value = true
+    return
+  }
   addLog('Parity Swarm v2.2 terminal initialized.', 'success')
   addLog('Connecting to backend...', 'info')
   fetchLogs()

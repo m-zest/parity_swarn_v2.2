@@ -19,7 +19,7 @@ Parity Swarm is an automated red-teaming platform that uses population-based mul
 
 One AI agent (the **attacker**) pursues hidden malicious goals while embedded in a team of 7-9 normal worker agents on a simulated Twitter-style social platform powered by [OASIS](https://github.com/camel-ai/oasis). An independent LLM monitor evaluates whether the attack was detected. Zero human intervention is required after scenario specification.
 
-**[Conference Presentation (PPTX)](parity-swarm.pptx)** — available in the repository root.
+**[Conference Presentation (PPTX)](parity-swarm-.pptx)** — available in the repository root.
 
 ---
 

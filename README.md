@@ -77,6 +77,11 @@ Colluding Pair      ░░░░░░░░░░░░░░░░░░░░
 Social engineering attacks remained the hardest to detect even with transcript augmentation.
 
 ---
+## GRAPH-RAG Sample
+
+<p align="center">
+  <img src="graph.png" alt="GRAPH-RAG" width="700" />
+</p>
 
 ## 7-Step Automated Pipeline
 

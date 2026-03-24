@@ -1,5 +1,7 @@
 <template>
   <div class="main-view">
+    <GpuFallback v-if="backendOffline" />
+    <template v-else>
     <header class="app-header">
       <div class="header-left">
         <div class="brand" @click="router.push('/')">
@@ -41,6 +43,7 @@
         />
       </div>
     </main>
+    </template>
   </div>
 </template>
 
@@ -49,8 +52,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import GraphPanel from '../components/GraphPanel.vue'
 import Step2EnvSetup from '../components/Step2EnvSetup.vue'
+import GpuFallback from '../components/GpuFallback.vue'
 import { getProject, getGraphData } from '../api/graph'
 import { getSimulation, stopSimulation, getEnvStatus, closeSimulationEnv } from '../api/simulation'
+
+const backendOffline = ref(false)
 
 const route = useRoute()
 const router = useRouter()
@@ -151,6 +157,8 @@ const loadGraph = async (graphId) => {
 const refreshGraph = () => { if (projectData.value?.graph_id) loadGraph(projectData.value.graph_id) }
 
 onMounted(async () => {
+  try { await fetch('/api/health', { signal: AbortSignal.timeout(3000) }) }
+  catch { backendOffline.value = true; return }
   addLog('SimulationView initialized')
   await checkAndStopRunningSimulation()
   loadSimulationData()

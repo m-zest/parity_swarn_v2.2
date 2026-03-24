@@ -20,6 +20,7 @@
         >
           <span class="nav-indicator"></span>
           <span class="nav-label">{{ item.label }}</span>
+          <span v-if="item.gpu" class="gpu-badge">GPU</span>
           <span class="nav-key">{{ item.key }}</span>
         </router-link>
       </nav>
@@ -49,11 +50,11 @@
 
 <script setup>
 const navItems = [
-  { to: '/', label: 'DASHBOARD', key: '01' },
-  { to: '/launch', label: 'LAUNCH SWARM', key: '02' },
-  { to: '/results', label: 'RESULTS', key: '03' },
-  { to: '/terminal', label: 'TERMINAL', key: '04' },
-  { to: '/history', label: 'HISTORY', key: '05' },
+  { to: '/', label: 'DASHBOARD', key: '01', gpu: false },
+  { to: '/launch', label: 'LAUNCH SWARM', key: '02', gpu: true },
+  { to: '/results', label: 'RESULTS', key: '03', gpu: true },
+  { to: '/terminal', label: 'TERMINAL', key: '04', gpu: true },
+  { to: '/history', label: 'HISTORY', key: '05', gpu: true },
 ]
 </script>
 
@@ -156,6 +157,18 @@ const navItems = [
 
 .nav-label {
   flex: 1;
+}
+
+.gpu-badge {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--orange);
+  border: 1px solid var(--orange-border);
+  padding: 1px 4px;
+  margin-left: auto;
+  margin-right: 6px;
+  opacity: 0.7;
 }
 
 .nav-key {

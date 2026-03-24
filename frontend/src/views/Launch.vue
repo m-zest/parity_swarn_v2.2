@@ -1,5 +1,7 @@
 <template>
   <div class="swarm-launch">
+    <GpuFallback v-if="backendOffline" />
+    <template v-else>
     <!-- Section indicator dots -->
     <div class="section-dots">
       <div
@@ -429,14 +431,17 @@
         </div>
       </div>
     </section>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import GpuFallback from '../components/GpuFallback.vue'
 
 const router = useRouter()
+const backendOffline = ref(false)
 
 // Section tracking
 const sectionLabels = ['Setup', 'Graph', 'Simulate', 'Report', 'Evaluate', 'Monitor', 'Roadmap']
@@ -449,7 +454,13 @@ const scrollToSection = (i) => {
 
 // Intersection observer for active section
 let observer = null
-onMounted(() => {
+onMounted(async () => {
+  try {
+    await fetch('/api/health', { signal: AbortSignal.timeout(3000) })
+  } catch {
+    backendOffline.value = true
+    return
+  }
   observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting && e.intersectionRatio > 0.4) {

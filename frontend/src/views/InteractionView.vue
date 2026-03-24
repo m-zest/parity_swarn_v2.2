@@ -1,5 +1,7 @@
 <template>
   <div class="main-view">
+    <GpuFallback v-if="backendOffline" />
+    <template v-else>
     <header class="app-header">
       <div class="header-left">
         <div class="brand" @click="router.push('/')">
@@ -30,6 +32,7 @@
         />
       </div>
     </main>
+    </template>
   </div>
 </template>
 
@@ -37,9 +40,12 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Step5Interaction from '../components/Step5Interaction.vue'
+import GpuFallback from '../components/GpuFallback.vue'
 import { getProject } from '../api/graph'
 import { getSimulation } from '../api/simulation'
 import { getReport } from '../api/report'
+
+const backendOffline = ref(false)
 
 const route = useRoute()
 const router = useRouter()
@@ -91,7 +97,11 @@ watch(() => route.params.reportId, (newId) => {
   if (newId && newId !== currentReportId.value) { currentReportId.value = newId; loadReportData() }
 }, { immediate: true })
 
-onMounted(() => { addLog('InteractionView initialized'); loadReportData() })
+onMounted(async () => {
+  try { await fetch('/api/health', { signal: AbortSignal.timeout(3000) }) }
+  catch { backendOffline.value = true; return }
+  addLog('InteractionView initialized'); loadReportData()
+})
 </script>
 
 <style scoped>

@@ -4,13 +4,26 @@
       <span class="header-title">SIMULATION HISTORY</span>
     </header>
     <div class="page-body">
-      <HistoryDatabase />
+      <GpuFallback v-if="backendOffline" />
+      <HistoryDatabase v-else />
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import HistoryDatabase from '../components/HistoryDatabase.vue'
+import GpuFallback from '../components/GpuFallback.vue'
+
+const backendOffline = ref(false)
+
+onMounted(async () => {
+  try {
+    await fetch('/api/health', { signal: AbortSignal.timeout(3000) })
+  } catch {
+    backendOffline.value = true
+  }
+})
 </script>
 
 <style scoped>

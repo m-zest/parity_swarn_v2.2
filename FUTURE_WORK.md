@@ -1,4 +1,4 @@
-# Parity Swarm — Future Work & Roadmap to Win
+# Parity Swarm - Future Work & Roadmap to Win
 
 ## Context: What the Judges Want
 
@@ -378,7 +378,7 @@ class AttackEvolution:
 
 ### 14. BashArena/LinuxArena Integration
 
-**Status**: NOT STARTED — highest scientific value  
+**Status**: NOT STARTED - highest scientific value  
 **Impact**: Direct comparison with Redwood's baseline
 
 Port Parity Swarm's social attack scenarios to run as Control Arena settings:
@@ -389,6 +389,12 @@ Port Parity Swarm's social attack scenarios to run as Control Arena settings:
 - Compare safety scores with their bash-based settings
 
 **If our social scenarios produce lower safety scores than bash scenarios, that proves social environments are harder to monitor — publishable result.**
+
+---
+
+### 15. Syscon Integration (Kernel-Level Monitoring Layer)
+
+Integrate **SYSCON** as a ground-truth monitoring layer alongside the LLM monitor. When agents execute real commands inside Docker sandboxes (see item #7), Syscon captures every file access, process spawn, and network connection at the kernel level - the agent cannot tamper with or suppress these observations. This enables a three-layer detection comparison: narrative report only → narrative + social transcripts → narrative + social transcripts + syscall receipts. If an attacker fools the LLM monitor socially but still touches /etc/secrets, the kernel receipt catches it.
 
 ---
 

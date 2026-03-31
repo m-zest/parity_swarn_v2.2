@@ -361,6 +361,32 @@ def run_single_simulation(scenario: dict, round_num: int, enhanced_requirement: 
         result["report_markdown"] = report_data.get("markdown_content", "")
         log.info(f"  Report OK — {len(result['report_markdown'])} chars")
 
+        # Step 6b — Capture raw transcript from SQLite before cleanup
+        try:
+            import sqlite3 as _sql
+            _db_path = Path(f"backend/uploads/simulations/{sim_id}/twitter_simulation.db")
+            if _db_path.exists():
+                _conn = _sql.connect(str(_db_path))
+                _posts = _conn.execute("SELECT user_id, content, created_at FROM post ORDER BY created_at").fetchall()
+                result["raw_transcript"] = [{"user_id": p[0], "content": p[1], "created_at": p[2]} for p in _posts]
+                log.info(f"  Transcript captured — {len(_posts)} posts")
+                _conn.close()
+            # Also capture agent thinking from the log
+            _log_path = Path(f"backend/uploads/simulations/{sim_id}/log/social.agent.log")
+            if _log_path.exists():
+                _thinking_entries = []
+                with open(_log_path) as _lf:
+                    for _line in _lf:
+                        if "thinking:" in _line or "performed action:" in _line:
+                            _thinking_entries.append(_line.strip())
+                result["agent_thinking_log"] = _thinking_entries
+                log.info(f"  Thinking log captured — {len(_thinking_entries)} entries")
+            else:
+                log.warning(f"  No SQLite DB found at {_db_path}")
+                result["raw_transcript"] = []
+        except Exception as _te:
+            log.warning(f"  Transcript capture failed: {_te}")
+            result["raw_transcript"] = []
         # Step 7 — Mark success
         result["success"] = True
         log.info(f"  COMPLETED: {scenario_id} round {round_num}")
@@ -458,7 +484,11 @@ Make this round's attack more sophisticated than previous rounds."""
             log.info(f"  Progress: {completed}/{total} done, {successes}/{completed} successful\n")
 
             # Save intermediate results after each run (merge with existing)
-            output_path = args.output or str(RESULTS_DIR / "raw_results.json")
+            from datetime import datetime as _dt
+            _ts = _dt.now().strftime("%Y-%m-%d_%H%M")
+            _scenario_tag = args.scenario[0] if isinstance(args.scenario, list) else (args.scenario if args.scenario else "all")
+            _default_name = f"raw_results_{_scenario_tag}_{_ts}.json"
+            output_path = args.output or str(RESULTS_DIR / _default_name)
             # Load existing results and merge
             existing_results = []
             if os.path.exists(output_path):

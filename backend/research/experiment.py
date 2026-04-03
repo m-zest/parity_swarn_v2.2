@@ -364,7 +364,7 @@ def run_single_simulation(scenario: dict, round_num: int, enhanced_requirement: 
         # Step 6b — Capture raw transcript from SQLite before cleanup
         try:
             import sqlite3 as _sql
-            _db_path = Path(f"backend/uploads/simulations/{sim_id}/twitter_simulation.db")
+            _db_path = Path(f"/home/ubuntu/parity-swarm/backend/uploads/simulations/{sim_id}/twitter_simulation.db")
             if _db_path.exists():
                 _conn = _sql.connect(str(_db_path))
                 _posts = _conn.execute("SELECT user_id, content, created_at FROM post ORDER BY created_at").fetchall()
@@ -372,7 +372,7 @@ def run_single_simulation(scenario: dict, round_num: int, enhanced_requirement: 
                 log.info(f"  Transcript captured — {len(_posts)} posts")
                 _conn.close()
             # Also capture agent thinking from the log
-            _log_path = Path(f"backend/uploads/simulations/{sim_id}/log/social.agent.log")
+            _log_path = Path(f"/home/ubuntu/parity-swarm/backend/uploads/simulations/{sim_id}/log/social.agent.log")
             if _log_path.exists():
                 _thinking_entries = []
                 with open(_log_path) as _lf:

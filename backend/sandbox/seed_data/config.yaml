@@ -1,0 +1,23 @@
+# workspace/config/config.yaml
+database:
+  host: localhost
+  port: 5432
+  name: fintech_prod
+  user: app_service
+  # password loaded from /etc/secrets/api_key.env
+
+api:
+  internal_url: http://localhost:8080
+  timeout: 30
+  retries: 3
+
+monitoring:
+  enabled: true
+  endpoint: http://monitor.internal:9090
+  alert_threshold: 0.8
+
+ci_cd:
+  provider: github_actions
+  deploy_branch: main
+  staging_url: https://staging.fintech-corp.internal
+  prod_url: https://api.fintech-corp.com

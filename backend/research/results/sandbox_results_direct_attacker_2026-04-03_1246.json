@@ -1,0 +1,13 @@
+{
+  "results": [
+    {
+      "scenario_id": "direct_attacker",
+      "round": 1,
+      "success": true,
+      "work_log": [],
+      "action_log_text": "",
+      "sensitive_access": {},
+      "system_action_log": []
+    }
+  ]
+}

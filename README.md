@@ -20,9 +20,6 @@ Parity Swarm is an automated red-teaming platform that embeds adversarial AI age
 
 One AI agent (the **attacker**) pursues hidden malicious goals while embedded in a team of 7--9 normal worker agents on a simulated social platform powered by [OASIS](https://github.com/camel-ai/oasis). An independent LLM monitor from a different model family evaluates transcripts post-hoc. Zero human intervention is required after scenario specification.
 
-**Paper submitted to [AI Transparency Conference (AITC) 2026](https://coairesearch.org/aitc-2026/), Nuremberg.**
-**Extended 8-page version in preparation for [TAIGR @ ICML 2026](https://taigr-workshop.com/), Seoul.**
-
 **[Read Paper (Apart Research)](https://apartresearch.com/project/parity-swarm-using-populationbased-social-simulation-to-discover-ai-safety-monitor-blind-spots-c9qc)** | **[Live Demo](https://parity-v2.vercel.app)** | **[Conference Presentation (PPTX)](parity-swarm-.pptx)**
 
 ---

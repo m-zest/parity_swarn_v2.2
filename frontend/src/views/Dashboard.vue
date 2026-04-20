@@ -22,9 +22,9 @@
         <div class="banner-content">
           <span class="banner-icon">!</span>
           <div class="banner-text">
-            <span class="banner-label">HACKATHON PROTOTYPE</span>
+            <span class="banner-label">PROTOTYPE (Ongoing Dev)</span>
             <span class="banner-desc">
-              This is a research demo submitted to the Apart Research AI Control Hackathon 2026.
+              This is a research demo.
               The simulation backend runs on a dedicated GPU server (Lambda Labs A100) and is not
               connected to this public demo. The results shown are from {{ data.meta.total_simulations }} completed simulation evaluations
               across {{ data.meta.scenarios_count }} attack scenarios. Active development ongoing.
